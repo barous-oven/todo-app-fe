@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/card"
 import { FieldGroup } from "@/components/ui/field"
 import Link from "next/link"
-import { LoginRequestSchema, TLoginRequestDto } from "./type"
+import { LoginRequestSchema, TLoginRequestDto } from "../../../types/login"
 
 export default function LoginForm() {
   const form = useForm<z.infer<typeof LoginRequestSchema>>({

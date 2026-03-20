@@ -15,7 +15,10 @@ import {
 } from "@/components/ui/card"
 import { FieldGroup } from "@/components/ui/field"
 import Link from "next/link"
-import { RegisterRequestSchema, TRegisterRequestDto } from "./type"
+import {
+  RegisterRequestSchema,
+  TRegisterRequestDto,
+} from "../../../types/register"
 
 export default function RegisterForm() {
   const form = useForm<z.infer<typeof RegisterRequestSchema>>({
