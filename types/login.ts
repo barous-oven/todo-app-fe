@@ -8,3 +8,10 @@ export const loginRequestSchema = z.object({
 })
 
 export type TLoginRequestDto = z.infer<typeof loginRequestSchema>
+
+export const loginResponseSchema = z.object({
+  accessToken: z.string(),
+  refreshToken: z.string(),
+})
+
+export type TLoginResponseDto = z.infer<typeof loginResponseSchema>

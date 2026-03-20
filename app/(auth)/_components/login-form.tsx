@@ -2,7 +2,6 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { FormProvider, useForm } from "react-hook-form"
-import * as z from "zod"
 
 import { FormItem, IFormItemProps } from "@/components/form/form-item"
 import { Button } from "@/components/ui/button"
@@ -14,10 +13,20 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { FieldGroup } from "@/components/ui/field"
+import { fetchData } from "@/lib/fetch-data"
+import {
+  loginRequestSchema,
+  TLoginRequestDto,
+  TLoginResponseDto,
+} from "@/types/login"
 import Link from "next/link"
-import { loginRequestSchema, TLoginRequestDto } from "@/types/login"
+import { useRouter } from "next/navigation"
+import { toast } from "sonner"
+import handleErrorMessage from "@/lib/handle-error-message"
 
 export default function LoginForm() {
+  const router = useRouter()
+
   const form = useForm<TLoginRequestDto>({
     resolver: zodResolver(loginRequestSchema),
     defaultValues: {
@@ -26,8 +35,28 @@ export default function LoginForm() {
     },
   })
 
-  function onSubmit(data: TLoginRequestDto) {
-    console.log("🚀 ~ onSubmit ~ data:", data)
+  async function onSubmit(data: TLoginRequestDto) {
+    try {
+      const response = await fetchData<TLoginResponseDto>({
+        url: `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: data,
+      })
+
+      if (response.error) {
+        console.error("Login failed:", response.message || response.error)
+        return
+      }
+
+      cookieStore.set("accessToken", response.data!.accessToken)
+      cookieStore.set("refreshToken", response.data!.refreshToken)
+      router.push("/")
+    } catch (e) {
+      toast.error(handleErrorMessage(e))
+    }
   }
 
   const fieldItems: IFormItemProps<TLoginRequestDto>[] = [
