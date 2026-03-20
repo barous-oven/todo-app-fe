@@ -1,11 +1,10 @@
 "use client"
 
-import * as React from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Controller, useForm } from "react-hook-form"
-import { toast } from "sonner"
+import { FormProvider, useForm } from "react-hook-form"
 import * as z from "zod"
 
+import { FormItem, IFormItemProps } from "@/components/form/form-item"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -14,15 +13,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import {
-  Field,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
-import { LoginRequestDto, LoginRequestSchema } from "./type"
+import { FieldGroup } from "@/components/ui/field"
 import Link from "next/link"
+import { LoginRequestSchema, TLoginRequestDto } from "./type"
 
 export default function LoginForm() {
   const form = useForm<z.infer<typeof LoginRequestSchema>>({
@@ -33,22 +26,23 @@ export default function LoginForm() {
     },
   })
 
-  function onSubmit(data: LoginRequestDto) {
-    toast("You submitted the following values:", {
-      description: (
-        <pre className="bg-code text-code-foreground mt-2 w-[320px] overflow-x-auto rounded-md p-4">
-          <code>{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-      position: "bottom-right",
-      classNames: {
-        content: "flex flex-col gap-2",
-      },
-      style: {
-        "--border-radius": "calc(var(--radius)  + 4px)",
-      } as React.CSSProperties,
-    })
+  function onSubmit(data: TLoginRequestDto) {
+    console.log("🚀 ~ onSubmit ~ data:", data)
   }
+
+  const fieldItems: IFormItemProps<TLoginRequestDto>[] = [
+    {
+      name: "email",
+      label: "Email",
+      placeholder: "Enter your email",
+    },
+    {
+      name: "password",
+      label: "Password",
+      placeholder: "Enter your password",
+      type: "password",
+    },
+  ]
 
   return (
     <Card className="w-full sm:max-w-md">
@@ -56,59 +50,25 @@ export default function LoginForm() {
         <CardTitle>Login</CardTitle>
       </CardHeader>
       <CardContent>
-        <form id="login-form" onSubmit={form.handleSubmit(onSubmit)}>
-          <FieldGroup>
-            <Controller
-              name="email"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="email">Email</FieldLabel>
-                  <Input
-                    {...field}
-                    id="email"
-                    aria-invalid={fieldState.invalid}
-                    placeholder="Enter your email"
-                    autoComplete="on"
-                  />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
-            />
-            <Controller
-              name="password"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="password">Password</FieldLabel>
-                  <Input
-                    {...field}
-                    id="password"
-                    aria-invalid={fieldState.invalid}
-                    placeholder="Enter your password"
-                    autoComplete="off"
-                    type="password"
-                  />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
-            />
-            <Button
-              type="submit"
-              form="login-form"
-              className="mx-auto block w-full shadow-sm transition-shadow hover:shadow-md active:scale-[0.98]"
-            >
-              Login
-            </Button>
-          </FieldGroup>
-        </form>
+        <FormProvider {...form}>
+          <form id="login-form" onSubmit={form.handleSubmit(onSubmit)}>
+            <FieldGroup>
+              {fieldItems.map((item) => (
+                <FormItem key={item.name} {...item} />
+              ))}
+              <Button
+                type="submit"
+                form="login-form"
+                className="mx-auto block w-full shadow-sm transition-shadow hover:shadow-md active:scale-[0.98]"
+              >
+                Login
+              </Button>
+            </FieldGroup>
+          </form>
+        </FormProvider>
       </CardContent>
       <CardFooter className="flex flex-col-reverse items-center justify-between gap-4 border-t border-border/50 sm:flex-row">
-        <p className="text-sm text-muted-foreground gap-10">
+        <p className="gap-10 text-sm text-muted-foreground">
           Don&apos;t have an account?{" "}
           <Link
             href="/register"

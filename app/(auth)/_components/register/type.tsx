@@ -13,4 +13,4 @@ export const RegisterRequestSchema = z
     path: ["confirmPassword"],
   })
 
-export type RegisterRequestDto = z.infer<typeof RegisterRequestSchema>
+export type TRegisterRequestDto = z.infer<typeof RegisterRequestSchema>
