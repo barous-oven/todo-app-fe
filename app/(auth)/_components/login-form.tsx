@@ -21,6 +21,8 @@ import {
 } from "@/types/login"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { toast } from "sonner"
+import handleErrorMessage from "@/lib/handle-error-message"
 
 export default function LoginForm() {
   const router = useRouter()
@@ -34,23 +36,27 @@ export default function LoginForm() {
   })
 
   async function onSubmit(data: TLoginRequestDto) {
-    const response = await fetchData<TLoginResponseDto>({
-      url: `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: data,
-    })
+    try {
+      const response = await fetchData<TLoginResponseDto>({
+        url: `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: data,
+      })
 
-    if (response.error) {
-      console.error("Login failed:", response.message || response.error)
-      return
+      if (response.error) {
+        console.error("Login failed:", response.message || response.error)
+        return
+      }
+
+      cookieStore.set("accessToken", response.data!.accessToken)
+      cookieStore.set("refreshToken", response.data!.refreshToken)
+      router.push("/")
+    } catch (e) {
+      toast.error(handleErrorMessage(e))
     }
-
-    cookieStore.set("accessToken", response.data!.accessToken)
-    cookieStore.set("refreshToken", response.data!.refreshToken)
-    router.push("/")
   }
 
   const fieldItems: IFormItemProps<TLoginRequestDto>[] = [
