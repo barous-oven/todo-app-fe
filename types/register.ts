@@ -1,6 +1,6 @@
 import { z } from "zod"
 
-export const RegisterRequestSchema = z
+export const registerRequestSchema = z
   .object({
     email: z.string({ message: "Email is required" }).email("Email is invalid"),
     password: z
@@ -13,4 +13,4 @@ export const RegisterRequestSchema = z
     path: ["confirmPassword"],
   })
 
-export type TRegisterRequestDto = z.infer<typeof RegisterRequestSchema>
+export type TRegisterRequestDto = z.infer<typeof registerRequestSchema>

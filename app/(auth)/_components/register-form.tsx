@@ -15,14 +15,11 @@ import {
 } from "@/components/ui/card"
 import { FieldGroup } from "@/components/ui/field"
 import Link from "next/link"
-import {
-  RegisterRequestSchema,
-  TRegisterRequestDto,
-} from "../../../types/register"
+import { registerRequestSchema, TRegisterRequestDto } from "@/types/register"
 
 export default function RegisterForm() {
-  const form = useForm<z.infer<typeof RegisterRequestSchema>>({
-    resolver: zodResolver(RegisterRequestSchema),
+  const form = useForm<TRegisterRequestDto>({
+    resolver: zodResolver(registerRequestSchema),
     defaultValues: {
       email: "",
       password: "",
