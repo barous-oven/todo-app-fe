@@ -2,7 +2,6 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { FormProvider, useForm } from "react-hook-form"
-import * as z from "zod"
 
 import { FormItem, IFormItemProps } from "@/components/form/form-item"
 import { Button } from "@/components/ui/button"
@@ -14,10 +13,16 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { FieldGroup } from "@/components/ui/field"
-import Link from "next/link"
+import { fetchData } from "@/lib/fetch-data"
+import handleErrorMessage from "@/lib/handle-error-message"
 import { registerRequestSchema, TRegisterRequestDto } from "@/types/register"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { toast } from "sonner"
 
 export default function RegisterForm() {
+  const router = useRouter()
+
   const form = useForm<TRegisterRequestDto>({
     resolver: zodResolver(registerRequestSchema),
     defaultValues: {
@@ -26,8 +31,26 @@ export default function RegisterForm() {
     },
   })
 
-  function onSubmit(data: TRegisterRequestDto) {
-    console.log("🚀 ~ onSubmit ~ data:", data)
+  async function onSubmit(data: TRegisterRequestDto) {
+    try {
+      await fetchData<null>({
+        url: `/auth/register`,
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: {
+          email: data.email,
+          password: data.password,
+          name: data.name,
+        },
+      })
+
+      toast.success("Register successful")
+      router.push("/login")
+    } catch (error) {
+      toast.error(handleErrorMessage(error))
+    }
   }
 
   const formItems: IFormItemProps<TRegisterRequestDto>[] = [
@@ -35,6 +58,11 @@ export default function RegisterForm() {
       name: "email",
       label: "Email",
       placeholder: "Enter your email",
+    },
+    {
+      name: "name",
+      label: "Name",
+      placeholder: "Enter your name",
     },
     {
       name: "password",
