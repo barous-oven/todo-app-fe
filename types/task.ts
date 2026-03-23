@@ -6,6 +6,12 @@ enum TaskStatus {
   COMPLETED,
 }
 
+export const taskStatusMap = {
+  PENDING: "pending",
+  IN_PROGRESS: "in_progess",
+  COMPLETED: "completed",
+}
+
 export const getTaskResponseSchema = z.object({
   id: z.string().uuid(),
 

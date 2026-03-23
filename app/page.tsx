@@ -1,11 +1,14 @@
 "use client"
 
+import { PageHeader } from "@/components/page-header"
+import { CommonPagination } from "@/components/pagination"
 import { TaskItem } from "@/components/task/task-item"
-import { TGetTaskResponseSchemaDto } from "@/types/task"
 import { Button } from "@/components/ui/button"
-import { ListFilter, Search } from "lucide-react"
-import { PageHeader, TPageProps } from "@/components/page-header"
 import { Input } from "@/components/ui/input"
+import { ItemGroup } from "@/components/ui/item"
+import { TGetTaskResponseSchemaDto } from "@/types/task"
+import { ListFilter } from "lucide-react"
+import { useState } from "react"
 
 const tasks: TGetTaskResponseSchemaDto[] = [
   {
@@ -28,15 +31,22 @@ const tasks: TGetTaskResponseSchemaDto[] = [
   },
 ]
 
-export default function TasksPage() {
-  const pageProps: TPageProps = {
-    pageName: "Tasks",
-    pageDescription: "Manage your personal workflow and deadlines.",
-  }
+const meta = {
+  total: 10,
+  totalPage: 10,
+  currentPage: 3,
+}
 
+export default function TasksPage() {
+  // TODO integate api
+
+  const [currentPage, setCurrentPage] = useState(meta.currentPage)
   return (
     <div className="mx-auto max-w-2xl px-4 py-10">
-      <PageHeader {...pageProps} />
+      <PageHeader
+        pageName="Tasks"
+        pageDescription="Manage your personal workflow and deadlines."
+      />
 
       <div className="mb-6 flex items-center gap-2">
         <Input placeholder="Search tasks..." type="search" />
@@ -45,7 +55,7 @@ export default function TasksPage() {
         </Button>
       </div>
 
-      <div className="grid gap-3">
+      <ItemGroup className="gap-3">
         {tasks.length > 0 ? (
           tasks.map((task) => <TaskItem key={task.id} {...task} />)
         ) : (
@@ -53,12 +63,12 @@ export default function TasksPage() {
             No tasks found.
           </div>
         )}
-      </div>
-
-      <footer className="mt-8 border-t pt-4 text-xs text-muted-foreground">
-        Showing {tasks.length} tasks •{" "}
-        {tasks.filter((t) => t.status === "COMPLETED").length} completed
-      </footer>
+        <CommonPagination
+          currentPage={currentPage}
+          totalPages={meta.totalPage}
+          onPageChange={setCurrentPage}
+        />
+      </ItemGroup>
     </div>
   )
 }
