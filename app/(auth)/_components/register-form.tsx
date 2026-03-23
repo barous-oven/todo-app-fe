@@ -34,7 +34,7 @@ export default function RegisterForm() {
   async function onSubmit(data: TRegisterRequestDto) {
     try {
       await fetchData<null>({
-        url: `${process.env.NEXT_PUBLIC_API_URL}/auth/register`,
+        url: `/auth/register`,
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -38,18 +38,13 @@ export default function LoginForm() {
   async function onSubmit(data: TLoginRequestDto) {
     try {
       const response = await fetchData<TLoginResponseDto>({
-        url: `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
+        url: `/auth/login`,
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: data,
       })
-
-      if (response.error) {
-        console.error("Login failed:", response.message || response.error)
-        return
-      }
 
       cookieStore.set("accessToken", response.data!.accessToken)
       cookieStore.set("refreshToken", response.data!.refreshToken)

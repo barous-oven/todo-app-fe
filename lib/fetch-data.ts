@@ -19,8 +19,10 @@ type ApiRequest = {
   body?: unknown
 }
 
+const BASE_URL = "/api"
+
 export async function fetchData<T>(req: ApiRequest): Promise<ApiResponse<T>> {
-  let finalUrl = req.url
+  let finalUrl = BASE_URL + req.url
 
   if (req.queryParams) {
     const params = new URLSearchParams()
