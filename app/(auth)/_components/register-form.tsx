@@ -32,6 +32,7 @@ export default function RegisterForm() {
   })
 
   async function onSubmit(data: TRegisterRequestDto) {
+    const { confirmPassword, ...body } = data
     try {
       await fetchData<null>({
         url: `/auth/register`,
@@ -39,11 +40,7 @@ export default function RegisterForm() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: {
-          email: data.email,
-          password: data.password,
-          name: data.name,
-        },
+        body,
       })
 
       toast.success("Register successful")
