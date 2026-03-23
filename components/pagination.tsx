@@ -7,19 +7,21 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination"
+import { TMeta } from "@/types/pagination"
 
 type CommonPaginationProps = {
-  currentPage: number
-  totalPages: number
   onPageChange: (page: number) => void
-}
+} & TMeta
+
+const MAX_BUTTON_VIEW = 5
+const MIN_PAGE_HAS_PRE_ELLIPSIS = 3
 
 function getPageNumbers(currentPage: number, totalPages: number) {
-  if (totalPages <= 5) {
+  if (totalPages <= MAX_BUTTON_VIEW) {
     return Array.from({ length: totalPages }, (_, i) => i + 1)
   }
 
-  if (currentPage <= 3) {
+  if (currentPage <= MIN_PAGE_HAS_PRE_ELLIPSIS) {
     return [1, 2, 3, 4, "ellipsis", totalPages]
   }
 

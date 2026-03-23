@@ -58,6 +58,7 @@ export function TaskItem({
           </div>
         </ItemContent>
 
+        {/* TODO: change to menu item */}
         <ItemActions>
           <Button
             variant="ghost"

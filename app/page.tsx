@@ -6,6 +6,7 @@ import { TaskItem } from "@/components/task/task-item"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ItemGroup } from "@/components/ui/item"
+import { TMeta } from "@/types/pagination"
 import { TGetTaskResponseSchemaDto } from "@/types/task"
 import { ListFilter } from "lucide-react"
 import { useState } from "react"
@@ -31,16 +32,15 @@ const tasks: TGetTaskResponseSchemaDto[] = [
   },
 ]
 
-const meta = {
-  total: 10,
-  totalPage: 10,
-  currentPage: 3,
-}
-
 export default function TasksPage() {
   // TODO integate api
 
-  const [currentPage, setCurrentPage] = useState(meta.currentPage)
+  const [currentPage, setCurrentPage] = useState(1)
+
+  const meta: TMeta = {
+    totalPages: 6,
+    currentPage,
+  }
   return (
     <div className="mx-auto max-w-2xl px-4 py-10">
       <PageHeader
@@ -63,11 +63,7 @@ export default function TasksPage() {
             No tasks found.
           </div>
         )}
-        <CommonPagination
-          currentPage={currentPage}
-          totalPages={meta.totalPage}
-          onPageChange={setCurrentPage}
-        />
+        <CommonPagination {...meta} onPageChange={setCurrentPage} />
       </ItemGroup>
     </div>
   )
