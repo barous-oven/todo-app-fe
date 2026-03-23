@@ -40,16 +40,6 @@ export default function TasksPage() {
   const [selectedTask, setSelectedTask] =
     useState<TGetTaskResponseSchemaDto | null>(null)
 
-  const pageProps: TPageProps = {
-    pageName: "Tasks",
-    pageDescription: "Manage your personal workflow and deadlines.",
-    onCreateClick: () => {
-      setSelectedTask(null)
-      setDialogType("create")
-      setOpenTaskDialog(true)
-    },
-  }
-
   function onEditClick(task: TGetTaskResponseSchemaDto): void {
     setSelectedTask(task)
     setDialogType("update")
@@ -67,6 +57,11 @@ export default function TasksPage() {
       <PageHeader
         pageName="Tasks"
         pageDescription="Manage your personal workflow and deadlines."
+        onCreateClick={() => {
+          setSelectedTask(null)
+          setDialogType("create")
+          setOpenTaskDialog(true)
+        }}
       />
 
       <div className="mb-6 flex items-center gap-2">
@@ -97,6 +92,7 @@ export default function TasksPage() {
         open={openTaskDialog}
         onOpenChange={setOpenTaskDialog}
         dialogType={dialogType}
+        task_id={selectedTask?.id}
       />
     </div>
   )
