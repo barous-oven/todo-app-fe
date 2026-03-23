@@ -46,8 +46,12 @@ export default function LoginForm() {
         body: data,
       })
 
-      cookieStore.set("accessToken", response.data!.accessToken)
-      cookieStore.set("refreshToken", response.data!.refreshToken)
+      if (!response.data) {
+        throw new Error("Something went wrong!")
+      }
+
+      cookieStore.set("accessToken", response.data.accessToken)
+      cookieStore.set("refreshToken", response.data.refreshToken)
       router.push("/")
     } catch (e) {
       toast.error(handleErrorMessage(e))
