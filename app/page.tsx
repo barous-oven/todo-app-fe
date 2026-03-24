@@ -36,13 +36,11 @@ const tasks: TGetTaskResponseSchemaDto[] = [
 export default function TasksPage() {
   // TODO integate api
   const [openTaskDialog, setOpenTaskDialog] = useState(false)
-  const [dialogType, setDialogType] = useState<"create" | "update">("create")
   const [selectedTask, setSelectedTask] =
     useState<TGetTaskResponseSchemaDto | null>(null)
 
   function onEditClick(task: TGetTaskResponseSchemaDto): void {
     setSelectedTask(task)
-    setDialogType("update")
     setOpenTaskDialog(true)
   }
 
@@ -59,7 +57,6 @@ export default function TasksPage() {
         pageDescription="Manage your personal workflow and deadlines."
         onCreateClick={() => {
           setSelectedTask(null)
-          setDialogType("create")
           setOpenTaskDialog(true)
         }}
       />
@@ -91,8 +88,7 @@ export default function TasksPage() {
       <TaskDialog
         open={openTaskDialog}
         onOpenChange={setOpenTaskDialog}
-        dialogType={dialogType}
-        task_id={selectedTask?.id}
+        taskId={selectedTask?.id}
       />
     </div>
   )

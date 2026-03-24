@@ -31,8 +31,7 @@ const TASK_STATUS_LABEL: TSelectOptions[] = [
 type TaskDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
-  dialogType: "create" | "update"
-  task_id?: string
+  taskId?: string
 }
 
 const contentMap = {
@@ -72,11 +71,11 @@ const tasks: TGetTaskDetailResponseSchemaDto[] = [
   },
 ]
 
-export function TaskDialog({ open, onOpenChange, task_id }: TaskDialogProps) {
-  const isUpdate = !!task_id
+export function TaskDialog({ open, onOpenChange, taskId }: TaskDialogProps) {
+  const isUpdate = !!taskId
   const content = contentMap[isUpdate ? "update" : "create"]
 
-  const task = tasks.find((t) => t.id === task_id) ?? null
+  const task = tasks.find((t) => t.id === taskId) ?? null
 
   const taskFormSchema = getTaskDetailResponseSchema.omit({
     id: true,
