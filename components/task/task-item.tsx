@@ -7,12 +7,17 @@ import { Badge } from "@/components/ui/badge"
 import { FieldLabel } from "../ui/field"
 import { Label } from "@/components/ui/label"
 
+type TaskItemProps = TGetTaskResponseSchemaDto & {
+  onEditClick: () => void
+}
+
 export function TaskItem({
   id,
   title,
   status,
   expiredAt,
-}: TGetTaskResponseSchemaDto) {
+  onEditClick,
+}: TaskItemProps) {
   // TODO integrate api
   const [isCompleted, setIsCompleted] = useState(status === "COMPLETED")
 
@@ -64,6 +69,7 @@ export function TaskItem({
             variant="ghost"
             size="sm"
             className="opacity-0 transition-opacity group-hover:opacity-100"
+            onClick={onEditClick}
           >
             Edit
           </Button>

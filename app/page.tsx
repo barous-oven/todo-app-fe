@@ -1,7 +1,7 @@
 "use client"
 
-import { PageHeader } from "@/components/page-header"
 import { CommonPagination } from "@/components/pagination"
+import { useState } from "react"
 import { TaskItem } from "@/components/task/task-item"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -9,7 +9,8 @@ import { ItemGroup } from "@/components/ui/item"
 import { TMeta } from "@/types/pagination"
 import { TGetTaskResponseSchemaDto } from "@/types/task"
 import { ListFilter } from "lucide-react"
-import { useState } from "react"
+import { PageHeader, TPageProps } from "@/components/page-header"
+import { TaskDialog } from "@/components/task/task-dialog"
 
 const tasks: TGetTaskResponseSchemaDto[] = [
   {
@@ -34,6 +35,14 @@ const tasks: TGetTaskResponseSchemaDto[] = [
 
 export default function TasksPage() {
   // TODO integate api
+  const [openTaskDialog, setOpenTaskDialog] = useState(false)
+  const [selectedTask, setSelectedTask] =
+    useState<TGetTaskResponseSchemaDto | null>(null)
+
+  function onEditClick(task: TGetTaskResponseSchemaDto): void {
+    setSelectedTask(task)
+    setOpenTaskDialog(true)
+  }
 
   const [currentPage, setCurrentPage] = useState(1)
 
@@ -46,6 +55,10 @@ export default function TasksPage() {
       <PageHeader
         pageName="Tasks"
         pageDescription="Manage your personal workflow and deadlines."
+        onCreateClick={() => {
+          setSelectedTask(null)
+          setOpenTaskDialog(true)
+        }}
       />
 
       <div className="mb-6 flex items-center gap-2">
@@ -57,7 +70,13 @@ export default function TasksPage() {
 
       <ItemGroup className="gap-3">
         {tasks.length > 0 ? (
-          tasks.map((task) => <TaskItem key={task.id} {...task} />)
+          tasks.map((task) => (
+            <TaskItem
+              key={task.id}
+              {...task}
+              onEditClick={() => onEditClick(task)}
+            />
+          ))
         ) : (
           <div className="flex h-40 flex-col items-center justify-center rounded-lg border border-dashed text-muted-foreground">
             No tasks found.
@@ -65,6 +84,12 @@ export default function TasksPage() {
         )}
         <CommonPagination {...meta} onPageChange={setCurrentPage} />
       </ItemGroup>
+
+      <TaskDialog
+        open={openTaskDialog}
+        onOpenChange={setOpenTaskDialog}
+        taskId={selectedTask?.id}
+      />
     </div>
   )
 }

@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { FormProvider, useForm } from "react-hook-form"
 
-import { FormItem, IFormItemProps } from "@/components/form/form-item"
+import { FormItem } from "@/components/form/form-item"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -23,6 +23,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import handleErrorMessage from "@/lib/handle-error-message"
+import { IFormItemProps } from "@/types/form-item"
 
 export default function LoginForm() {
   const router = useRouter()
@@ -62,12 +63,17 @@ export default function LoginForm() {
     {
       name: "email",
       label: "Email",
-      placeholder: "Enter your email",
+      type: "text",
+      props: {
+        placeholder: "Enter your email",
+      },
     },
     {
       name: "password",
       label: "Password",
-      placeholder: "Enter your password",
+      props: {
+        placeholder: "Enter your password",
+      },
       type: "password",
     },
   ]

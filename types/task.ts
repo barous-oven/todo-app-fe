@@ -1,10 +1,10 @@
 import { z } from "zod"
 
-enum TaskStatus {
-  PENDING,
-  IN_PROGRESS,
-  COMPLETED,
-}
+export const TASK_STATUS_LABEL = [
+  { label: "PENDING", value: "PENDING" },
+  { label: "IN_PROGRESS", value: "IN_PROGRESS" },
+  { label: "COMPLETED", value: "COMPLETED" },
+]
 
 export const taskStatusMap = {
   PENDING: "pending",
@@ -19,7 +19,23 @@ export const getTaskResponseSchema = z.object({
 
   status: z.enum(["PENDING", "IN_PROGRESS", "COMPLETED"]),
 
-  expiredAt: z.string().date(),
+  expiredAt: z.coerce.string(),
 })
 
 export type TGetTaskResponseSchemaDto = z.infer<typeof getTaskResponseSchema>
+
+export const getTaskDetailResponseSchema = z.object({
+  id: z.string().uuid(),
+
+  title: z.string().min(1, "Title must not be empty"),
+
+  description: z.string().optional(),
+
+  status: z.enum(["PENDING", "IN_PROGRESS", "COMPLETED"]),
+
+  expiredAt: z.coerce.string(),
+})
+
+export type TGetTaskDetailResponseSchemaDto = z.infer<
+  typeof getTaskDetailResponseSchema
+>
