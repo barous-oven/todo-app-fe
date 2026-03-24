@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/popover"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 
-type DateTimePickerProps = {
+export type DateTimePickerProps = {
   value?: string
   onChange: (value: string) => void
 }

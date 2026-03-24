@@ -64,12 +64,16 @@ export default function LoginForm() {
       name: "email",
       label: "Email",
       type: "text",
-      placeholder: "Enter your email",
+      props: {
+        placeholder: "Enter your email",
+      },
     },
     {
       name: "password",
       label: "Password",
-      placeholder: "Enter your password",
+      props: {
+        placeholder: "Enter your password",
+      },
       type: "password",
     },
   ]

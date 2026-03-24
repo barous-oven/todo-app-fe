@@ -56,24 +56,32 @@ export default function RegisterForm() {
       name: "email",
       type: "text",
       label: "Email",
-      placeholder: "Enter your email",
+      props: {
+        placeholder: "Enter your email",
+      },
     },
     {
       name: "name",
       type: "text",
       label: "Name",
-      placeholder: "Enter your name",
+      props: {
+        placeholder: "Enter your name",
+      },
     },
     {
       name: "password",
       label: "Password",
-      placeholder: "Enter your password",
+      props: {
+        placeholder: "Enter your password",
+      },
       type: "password",
     },
     {
       name: "confirmPassword",
       label: "Confirm password",
-      placeholder: "Rewrite your password",
+      props: {
+        placeholder: "Rewrite your password",
+      },
       type: "password",
     },
   ]

@@ -1,4 +1,3 @@
-import { TSelectOptions } from "@/types/select-options"
 import {
   ControllerFieldState,
   ControllerRenderProps,
@@ -15,33 +14,31 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select"
+import { TFormField } from "@/types/form-item"
 export type TInputType = "password" | "text" | "select" | "datetime-picker"
 
 type TFormFieldProps<T> = {
   field: ControllerRenderProps<FieldValues, Path<T>>
   fieldState: ControllerFieldState
   type: TInputType
-  placeholder?: string
-  selectOptions?: TSelectOptions[]
-}
+} & TFormField
 
 export function FormField<T>({
   field,
   fieldState,
   type,
-  placeholder,
-  selectOptions,
+  props,
 }: TFormFieldProps<T>) {
   switch (type) {
     case "select": {
       return (
         <Select {...field} onValueChange={field.onChange}>
           <SelectTrigger className="w-full">
-            <SelectValue placeholder={placeholder} />
+            <SelectValue placeholder={props.placeholder} />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              {selectOptions?.map((item) => (
+              {props.selectOptions?.map((item) => (
                 <SelectItem key={item.label} value={item.value}>
                   {item.label}
                 </SelectItem>
@@ -62,7 +59,7 @@ export function FormField<T>({
           id={field.name}
           type={type}
           aria-invalid={fieldState.invalid}
-          placeholder={placeholder}
+          placeholder={props.placeholder}
           autoComplete="on"
         />
       )

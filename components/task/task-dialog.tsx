@@ -76,12 +76,15 @@ export function TaskDialog({ open, onOpenChange, taskId }: TaskDialogProps) {
     id: true,
   })
 
-  const defaultValues: Omit<TGetTaskDetailResponseSchemaDto, "id"> = {
-    title: task ? task.title : "",
-    description: task ? task.description : "",
-    expiredAt: task ? task.expiredAt : "",
-    status: task ? task.status : "PENDING",
-  }
+  const defaultValues = useMemo<Omit<TGetTaskDetailResponseSchemaDto, "id">>(
+    () => ({
+      title: task?.title ?? "",
+      description: task?.description ?? "",
+      expiredAt: task?.expiredAt ?? new Date().toISOString(),
+      status: task?.status ?? "PENDING",
+    }),
+    [task]
+  )
 
   const form = useForm<Omit<TGetTaskDetailResponseSchemaDto, "id">>({
     resolver: zodResolver(taskFormSchema),
@@ -95,19 +98,25 @@ export function TaskDialog({ open, onOpenChange, taskId }: TaskDialogProps) {
         name: "title",
         type: "text",
         label: "Title",
-        placeholder: "Title",
+        props: {
+          placeholder: "Title",
+        },
       },
       {
         name: "description",
         type: "text",
         label: "Description",
-        placeholder: "Description",
+        props: {
+          placeholder: "Description",
+        },
       },
       {
         name: "status",
         label: "Status",
         type: "select",
-        selectOptions: TASK_STATUS_LABEL,
+        props: {
+          selectOptions: TASK_STATUS_LABEL,
+        },
       },
       {
         name: "expiredAt",
@@ -124,6 +133,7 @@ export function TaskDialog({ open, onOpenChange, taskId }: TaskDialogProps) {
   function onSubmit(date: Omit<TGetTaskDetailResponseSchemaDto, "id">) {
     // TODO: integrate api
     console.log("🚀 ~ onSubmit ~ date:", date)
+    onOpenChange(false)
   }
 
   return (
