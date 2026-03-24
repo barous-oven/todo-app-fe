@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Item, ItemActions, ItemContent, ItemTitle } from "@/components/ui/item"
 import { taskStatusMap, TGetTaskResponseSchemaDto } from "@/types/task"
-import { useState } from "react" // Thêm useState
+import { useState } from "react"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,7 +15,7 @@ import {
 import { FieldLabel } from "../ui/field"
 
 type TaskItemProps = TGetTaskResponseSchemaDto & {
-  onEditClick: () => void
+  onEdit: () => void
 }
 
 export function TaskItem({
@@ -23,7 +23,7 @@ export function TaskItem({
   title,
   status,
   expiredAt,
-  onEditClick,
+  onEdit,
 }: TaskItemProps) {
   // TODO integrate api
   const [isCompleted, setIsCompleted] = useState(status === "COMPLETED")
@@ -44,7 +44,7 @@ export function TaskItem({
         <ItemContent className="flex flex-col gap-2">
           <div className="flex items-center gap-3">
             <Checkbox
-              id={`${id}`}
+              id={id}
               checked={isCompleted}
               onCheckedChange={toggleComplete}
               aria-label={`Mark "${title}" as complete`}
@@ -82,7 +82,7 @@ export function TaskItem({
             <DropdownMenuContent>
               <DropdownMenuGroup>
                 <DropdownMenuLabel>Action</DropdownMenuLabel>
-                <DropdownMenuItem id="edit" onClickCapture={onEditClick}>
+                <DropdownMenuItem id="edit" onClickCapture={onEdit}>
                   Edit
                 </DropdownMenuItem>
                 <DropdownMenuItem id="delete" onClick={onDelete}>

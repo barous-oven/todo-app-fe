@@ -39,7 +39,7 @@ export default function TasksPage() {
   const [selectedTask, setSelectedTask] =
     useState<TGetTaskResponseSchemaDto | null>(null)
 
-  function onEditClick(task: TGetTaskResponseSchemaDto): void {
+  function onEdit(task: TGetTaskResponseSchemaDto): void {
     setSelectedTask(task)
     setOpenTaskDialog(true)
   }
@@ -55,7 +55,7 @@ export default function TasksPage() {
       <PageHeader
         pageName="Tasks"
         pageDescription="Manage your personal workflow and deadlines."
-        onCreateClick={() => {
+        onCreate={() => {
           setSelectedTask(null)
           setOpenTaskDialog(true)
         }}
@@ -71,11 +71,7 @@ export default function TasksPage() {
       <ItemGroup className="gap-3">
         {tasks.length > 0 ? (
           tasks.map((task) => (
-            <TaskItem
-              key={task.id}
-              {...task}
-              onEditClick={() => onEditClick(task)}
-            />
+            <TaskItem key={task.id} {...task} onEdit={() => onEdit(task)} />
           ))
         ) : (
           <div className="flex h-40 flex-col items-center justify-center rounded-lg border border-dashed text-muted-foreground">

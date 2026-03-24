@@ -4,11 +4,11 @@ import { Button } from "./ui/button"
 export type TPageProps = {
   pageName: string
   pageDescription: string
-  onCreateClick?: () => void
+  onCreate?: () => void
 }
 
 export function PageHeader(props: TPageProps) {
-  const { pageName, pageDescription, onCreateClick } = props
+  const { pageName, pageDescription, onCreate } = props
   return (
     <header className="mb-8 flex items-end justify-between">
       <div className="space-y-1">
@@ -16,7 +16,7 @@ export function PageHeader(props: TPageProps) {
         <p className="text-sm text-muted-foreground">{pageDescription}</p>
       </div>
 
-      <Button size="sm" className="gap-2" onClick={onCreateClick}>
+      <Button size="sm" className="gap-2" onClick={onCreate}>
         <Plus className="h-4 w-4" />
         New
       </Button>
