@@ -1,8 +1,7 @@
-import { TSelectOptions } from "@/types/select-options"
-import { Controller, FieldValues, Path, useFormContext } from "react-hook-form"
-import { Field, FieldError, FieldLabel } from "../ui/field"
-import { FormField, TInputType } from "./form-field"
 import { IFormItemProps } from "@/types/form-item"
+import { Controller, FieldValues, useFormContext } from "react-hook-form"
+import { Field, FieldError, FieldLabel } from "../ui/field"
+import { FormField } from "./form-field"
 
 function FormItem<T extends FieldValues>({
   name,

@@ -1,4 +1,3 @@
-import { TInputType } from "@/components/form/form-field"
 import { FieldValues, Path } from "react-hook-form"
 import { TSelectOptions } from "./select-options"
 import { DateTimePickerProps } from "@/components/ui/date-time-picker"
@@ -13,6 +12,8 @@ export type TFormField =
   | TInputItemProps
   | TInputPasswordProps
   | TDatetimePickProps
+
+export type TInputType = TFormField["type"]
 
 type TSelectItemProps = {
   type: "select"
