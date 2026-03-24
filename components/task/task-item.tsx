@@ -1,11 +1,18 @@
-import { useState } from "react" // Thêm useState
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
 import { Item, ItemActions, ItemContent, ItemTitle } from "@/components/ui/item"
 import { taskStatusMap, TGetTaskResponseSchemaDto } from "@/types/task"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Badge } from "@/components/ui/badge"
+import { useState } from "react" // Thêm useState
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu"
 import { FieldLabel } from "../ui/field"
-import { Label } from "@/components/ui/label"
 
 type TaskItemProps = TGetTaskResponseSchemaDto & {
   onEditClick: () => void
@@ -27,13 +34,17 @@ export function TaskItem({
     setIsCompleted(!isCompleted)
   }
 
+  const onDelete = () => {
+    console.log("Deleted!")
+  }
+
   return (
     <FieldLabel className="w-full" id={id}>
       <Item variant="outline" className="group w-full py-3">
         <ItemContent className="flex flex-col gap-2">
           <div className="flex items-center gap-3">
             <Checkbox
-              id={`task-${id}`}
+              id={`${id}`}
               checked={isCompleted}
               onCheckedChange={toggleComplete}
               aria-label={`Mark "${title}" as complete`}
@@ -63,16 +74,23 @@ export function TaskItem({
           </div>
         </ItemContent>
 
-        {/* TODO: change to menu item */}
         <ItemActions>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="opacity-0 transition-opacity group-hover:opacity-100"
-            onClick={onEditClick}
-          >
-            Edit
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline">...</Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuGroup>
+                <DropdownMenuLabel>Action</DropdownMenuLabel>
+                <DropdownMenuItem id="edit" onClickCapture={onEditClick}>
+                  Edit
+                </DropdownMenuItem>
+                <DropdownMenuItem id="delete" onClick={onDelete}>
+                  Delete
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </ItemActions>
       </Item>
     </FieldLabel>

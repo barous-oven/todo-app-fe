@@ -11,17 +11,16 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { FieldGroup } from "@/components/ui/field"
-import { TSelectOptions } from "@/types/select-options"
+import { IFormItemProps } from "@/types/form-item"
 import {
   getTaskDetailResponseSchema,
   TASK_STATUS_LABEL,
   TGetTaskDetailResponseSchemaDto,
 } from "@/types/task"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useMemo } from "react"
 import { FormProvider, useForm } from "react-hook-form"
 import { FormItem } from "../form/form-item"
-import { useMemo } from "react"
-import { IFormItemProps } from "@/types/form-item"
 
 type TaskDialogProps = {
   open: boolean
