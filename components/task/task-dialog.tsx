@@ -14,6 +14,7 @@ import { FieldGroup } from "@/components/ui/field"
 import { TSelectOptions } from "@/types/select-options"
 import {
   getTaskDetailResponseSchema,
+  TASK_STATUS_LABEL,
   TGetTaskDetailResponseSchemaDto,
 } from "@/types/task"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -21,12 +22,6 @@ import { FormProvider, useForm } from "react-hook-form"
 import { FormItem } from "../form/form-item"
 import { useMemo } from "react"
 import { IFormItemProps } from "@/types/form-item"
-
-const TASK_STATUS_LABEL: TSelectOptions[] = [
-  { label: "PENDING", value: "PENDING" },
-  { label: "IN_PROGRESS", value: "IN_PROGRESS" },
-  { label: "COMPLETED", value: "COMPLETED" },
-]
 
 type TaskDialogProps = {
   open: boolean
@@ -80,20 +75,18 @@ export function TaskDialog({ open, onOpenChange, taskId }: TaskDialogProps) {
   const taskFormSchema = getTaskDetailResponseSchema.omit({
     id: true,
   })
+
+  const defaultValues: Omit<TGetTaskDetailResponseSchemaDto, "id"> = {
+    title: task ? task.title : "",
+    description: task ? task.description : "",
+    expiredAt: task ? task.expiredAt : "",
+    status: task ? task.status : "PENDING",
+  }
+
   const form = useForm<Omit<TGetTaskDetailResponseSchemaDto, "id">>({
     resolver: zodResolver(taskFormSchema),
-    defaultValues: {
-      title: task ? task.title : "",
-      description: task ? task.description : "",
-      expiredAt: new Date(1).toISOString(),
-      status: "COMPLETED",
-    },
-    values: {
-      title: task ? task.title : "",
-      description: task ? task.description : "",
-      expiredAt: new Date(1).toISOString(),
-      status: "COMPLETED",
-    },
+    defaultValues,
+    values: defaultValues,
   })
 
   const fields = useMemo(() => {
@@ -129,6 +122,7 @@ export function TaskDialog({ open, onOpenChange, taskId }: TaskDialogProps) {
   }, [isUpdate])
 
   function onSubmit(date: Omit<TGetTaskDetailResponseSchemaDto, "id">) {
+    // TODO: integrate api
     console.log("🚀 ~ onSubmit ~ date:", date)
   }
 
