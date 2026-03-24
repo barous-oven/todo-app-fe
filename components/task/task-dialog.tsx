@@ -10,22 +10,19 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { Field, FieldGroup } from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { TGetTaskDetailResponseSchemaDto } from "@/types/task"
+import { FieldGroup } from "@/components/ui/field"
+import { TSelectOptions } from "@/types/select-options"
 import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import { DateTimePicker } from "@/components/ui/date-time-picker"
+  getTaskDetailResponseSchema,
+  TGetTaskDetailResponseSchemaDto,
+} from "@/types/task"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { FormProvider, useForm } from "react-hook-form"
+import { FormItem } from "../form/form-item"
+import { useMemo } from "react"
+import { IFormItemProps } from "@/types/form-item"
 
-const TASK_STATUS_LABEL = [
+const TASK_STATUS_LABEL: TSelectOptions[] = [
   { label: "PENDING", value: "PENDING" },
   { label: "IN_PROGRESS", value: "IN_PROGRESS" },
   { label: "COMPLETED", value: "COMPLETED" },
@@ -75,76 +72,83 @@ const tasks: TGetTaskDetailResponseSchemaDto[] = [
   },
 ]
 
-export function TaskDialog({
-  open,
-  onOpenChange,
-  dialogType,
-  task_id,
-}: TaskDialogProps) {
-  const content = contentMap[dialogType]
-  const isUpdate = dialogType === "update"
+export function TaskDialog({ open, onOpenChange, task_id }: TaskDialogProps) {
+  const isUpdate = !!task_id
+  const content = contentMap[isUpdate ? "update" : "create"]
 
   const task = tasks.find((t) => t.id === task_id) ?? null
+
+  const taskFormSchema = getTaskDetailResponseSchema.omit({
+    id: true,
+  })
+  const form = useForm<Omit<TGetTaskDetailResponseSchemaDto, "id">>({
+    resolver: zodResolver(taskFormSchema),
+    defaultValues: {
+      title: task ? task.title : "",
+      description: task ? task.description : "",
+      expiredAt: new Date(1).toISOString(),
+      status: "COMPLETED",
+    },
+    values: {
+      title: task ? task.title : "",
+      description: task ? task.description : "",
+      expiredAt: new Date(1).toISOString(),
+      status: "COMPLETED",
+    },
+  })
+
+  const fields = useMemo(() => {
+    const fieldInfor: IFormItemProps<TGetTaskDetailResponseSchemaDto>[] = [
+      {
+        name: "title",
+        type: "text",
+        label: "Title",
+        placeholder: "Title",
+      },
+      {
+        name: "description",
+        type: "text",
+        label: "Description",
+        placeholder: "Description",
+      },
+      {
+        name: "status",
+        label: "Status",
+        type: "select",
+        selectOptions: TASK_STATUS_LABEL,
+      },
+      {
+        name: "expiredAt",
+        label: "Expire At",
+        type: "datetime-picker",
+      },
+    ]
+    if (!isUpdate) {
+      return fieldInfor.filter((item) => item.name !== "status")
+    }
+    return fieldInfor
+  }, [isUpdate])
+
+  function onSubmit(date: Omit<TGetTaskDetailResponseSchemaDto, "id">) {
+    console.log("🚀 ~ onSubmit ~ date:", date)
+  }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-sm">
-        <form className="space-y-4">
+        <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
           <DialogHeader>
             <DialogTitle>{content.title}</DialogTitle>
             <DialogDescription>{content.description}</DialogDescription>
           </DialogHeader>
 
-          <FieldGroup>
-            <Field>
-              <Label htmlFor="title">Title</Label>
-              <Input
-                id="title"
-                name="title"
-                placeholder="Title"
-                defaultValue={task ? task.title : ""}
-              />
-            </Field>
-
-            <Field>
-              <Label htmlFor="description">Description</Label>
-              <Input
-                id="description"
-                name="description"
-                placeholder="Description"
-                defaultValue={task ? task.description : ""}
-              />
-            </Field>
-
-            {isUpdate && (
-              <Field>
-                <Label htmlFor="status">Status</Label>
-
-                <Select defaultValue={task ? task.status : ""}>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select a status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectLabel>Status</SelectLabel>
-                      {TASK_STATUS_LABEL.map((item) => (
-                        <SelectItem key={item.label} value={item.value}>
-                          {item.label}
-                        </SelectItem>
-                      ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </Field>
-            )}
-
-            <Field>
-              <Label htmlFor="expired_at">Expires at</Label>
-              <DateTimePicker
-                defaultValue={task ? new Date(task.expiredAt) : new Date()}
-              />
-            </Field>
-          </FieldGroup>
+          <FormProvider {...form}>
+            <FieldGroup>
+              {fields.map((item) => {
+                return <FormItem key={item.name} {...item} />
+              })}
+            </FieldGroup>
+          </FormProvider>
 
           <DialogFooter>
             <DialogClose asChild>

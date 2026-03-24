@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { FormProvider, useForm } from "react-hook-form"
 
-import { FormItem, IFormItemProps } from "@/components/form/form-item"
+import { FormItem } from "@/components/form/form-item"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -19,6 +19,7 @@ import { registerRequestSchema, TRegisterRequestDto } from "@/types/register"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
+import { IFormItemProps } from "@/types/form-item"
 
 export default function RegisterForm() {
   const router = useRouter()
@@ -53,11 +54,13 @@ export default function RegisterForm() {
   const formItems: IFormItemProps<TRegisterRequestDto>[] = [
     {
       name: "email",
+      type: "text",
       label: "Email",
       placeholder: "Enter your email",
     },
     {
       name: "name",
+      type: "text",
       label: "Name",
       placeholder: "Enter your name",
     },

@@ -1,4 +1,3 @@
-import { describe } from "node:test"
 import { z } from "zod"
 
 export const TASK_STATUS_LABEL = [
@@ -20,7 +19,7 @@ export const getTaskResponseSchema = z.object({
 
   status: z.enum(["PENDING", "IN_PROGRESS", "COMPLETED"]),
 
-  expiredAt: z.string().date(),
+  expiredAt: z.coerce.string(),
 })
 
 export type TGetTaskResponseSchemaDto = z.infer<typeof getTaskResponseSchema>
@@ -34,7 +33,7 @@ export const getTaskDetailResponseSchema = z.object({
 
   status: z.enum(["PENDING", "IN_PROGRESS", "COMPLETED"]),
 
-  expiredAt: z.string().date(),
+  expiredAt: z.coerce.string(),
 })
 
 export type TGetTaskDetailResponseSchemaDto = z.infer<

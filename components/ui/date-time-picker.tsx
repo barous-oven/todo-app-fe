@@ -15,11 +15,12 @@ import {
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 
 type DateTimePickerProps = {
-  defaultValue?: Date
+  value?: string
+  onChange: (value: string) => void
 }
 
-export function DateTimePicker({ defaultValue }: DateTimePickerProps) {
-  const [date, setDate] = React.useState<Date | undefined>(defaultValue)
+export function DateTimePicker({ value, onChange }: DateTimePickerProps) {
+  const date = new Date(value ?? "")
   const [isOpen, setIsOpen] = React.useState(false)
 
   const hours = Array.from({ length: 12 }, (_, i) => i + 1)
@@ -31,11 +32,11 @@ export function DateTimePicker({ defaultValue }: DateTimePickerProps) {
       const newDate = new Date(selectedDate)
       newDate.setHours(date.getHours())
       newDate.setMinutes(date.getMinutes())
-      setDate(newDate)
+      onChange(newDate.toISOString())
       return
     }
 
-    setDate(selectedDate)
+    onChange(selectedDate.toISOString())
   }
 
   const handleTimeChange = (
@@ -62,7 +63,7 @@ export function DateTimePicker({ defaultValue }: DateTimePickerProps) {
       }
     }
 
-    setDate(newDate)
+    onChange(newDate.toISOString())
   }
 
   return (
