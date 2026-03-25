@@ -4,16 +4,9 @@ import { useAuth } from "@/components/auth-provider"
 import { CustomDropDown } from "@/components/custom-dropdown/custom-dropdown"
 import { PageHeader } from "@/components/page-header"
 import { CommonPagination } from "@/components/pagination"
-import { TaskDialog } from "@/components/task/task-dialog"
+import { CreateTaskDialog } from "@/components/task/create-task-dialog"
 import { TaskItem } from "@/components/task/task-item"
-import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+import { UpdateTaskDialog } from "@/components/task/update-task-dialog"
 import { Input } from "@/components/ui/input"
 import { ItemGroup } from "@/components/ui/item"
 import {
@@ -44,7 +37,8 @@ type TQueryOptions = {
 
 export default function TasksPage() {
   const { accessToken } = useAuth()
-  const [openTaskDialog, setOpenTaskDialog] = useState(false)
+  const [openCreateDialog, setOpenCreateDialog] = useState(false)
+  const [openUpdateDialog, setOpenUpdateDialog] = useState(false)
   const [selectedTask, setSelectedTask] =
     useState<TGetTaskResponseSchemaDto | null>(null)
   const [queryParams, setQueryParams] = useState<TQueryOptions>({
@@ -55,7 +49,7 @@ export default function TasksPage() {
 
   function onEdit(task: TGetTaskResponseSchemaDto): void {
     setSelectedTask(task)
-    setOpenTaskDialog(true)
+    setOpenUpdateDialog(true)
   }
 
   function setQuery(value: Partial<TQueryOptions>): void {
@@ -112,10 +106,9 @@ export default function TasksPage() {
         pageDescription="Manage your personal workflow and deadlines."
         onCreate={() => {
           setSelectedTask(null)
-          setOpenTaskDialog(true)
+          setOpenCreateDialog(true)
         }}
       />
-
       <div className="mb-6 flex items-center gap-2">
         <Input
           placeholder="Search tasks..."
@@ -147,7 +140,6 @@ export default function TasksPage() {
           </Select>
         </CustomDropDown>
       </div>
-
       <ItemGroup className="gap-3">
         {isLoading ? (
           <div className="flex h-40 flex-col items-center justify-center rounded-lg border border-dashed text-muted-foreground">
@@ -170,10 +162,13 @@ export default function TasksPage() {
           />
         )}
       </ItemGroup>
-
-      <TaskDialog
-        open={openTaskDialog}
-        onOpenChange={setOpenTaskDialog}
+      <CreateTaskDialog
+        open={openCreateDialog}
+        onOpenChange={setOpenCreateDialog}
+      />
+      <UpdateTaskDialog
+        open={openUpdateDialog}
+        onOpenChange={setOpenUpdateDialog}
         taskId={selectedTask?.id}
       />
     </div>

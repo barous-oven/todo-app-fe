@@ -2,8 +2,15 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Item, ItemActions, ItemContent, ItemTitle } from "@/components/ui/item"
+import { DATETIME_FORMAT } from "@/constants/datetime-format"
+import useTaskUpdate from "@/hooks/use-task-update"
+import { fetchData } from "@/lib/fetch-data"
+import handleErrorMessage from "@/lib/handle-error-message"
 import { taskStatusMap, TGetTaskResponseSchemaDto } from "@/types/task"
-import { useState } from "react"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { format } from "date-fns"
+import { toast } from "sonner"
+import { useAuth } from "../auth-provider"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,11 +20,6 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu"
 import { FieldLabel } from "../ui/field"
-import { fetchData } from "@/lib/fetch-data"
-import { useAuth } from "../auth-provider"
-import { toast } from "sonner"
-import handleErrorMessage from "@/lib/handle-error-message"
-import { QueryClient, useQueryClient } from "@tanstack/react-query"
 
 type TaskItemProps = TGetTaskResponseSchemaDto & {
   onEdit: () => void
@@ -30,10 +32,12 @@ export function TaskItem({
   expiredAt,
   onEdit,
 }: TaskItemProps) {
-  const [isCompleted, setIsCompleted] = useState(status === "COMPLETED")
   const { accessToken } = useAuth()
-  const isOverdue = new Date(expiredAt) < new Date() && !isCompleted
   const queryClient = useQueryClient()
+  const updateMutation = useTaskUpdate(id)
+
+  const isCompleted = status === "COMPLETED"
+  const isOverdue = new Date(expiredAt) < new Date() && !isCompleted
 
   const toggleComplete = async () => {
     try {
@@ -45,32 +49,42 @@ export function TaskItem({
         expiredAt,
       }
 
-      // TODO: useMutation
-      const response = await fetchData<TGetTaskResponseSchemaDto[]>({
-        url: `/tasks/${id}`,
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
+      updateMutation.mutate(body, {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ["tasks"] })
         },
-        body,
+        onError: (error) => {
+          toast.error(handleErrorMessage(error))
+        },
       })
-
-      await queryClient.invalidateQueries({
-        queryKey: ["tasks"],
-      })
-
-      if (!response.data) {
-        throw new Error("Something went wrong!")
-      }
-      setIsCompleted(!isCompleted)
     } catch (error) {
       toast.error(handleErrorMessage(error))
     }
   }
 
+  const deleteMutation = useMutation({
+    mutationKey: ["tasks"],
+    mutationFn: async (taskId: string) => {
+      fetchData({
+        url: `/tasks/${taskId}`,
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+    },
+  })
   const onDelete = () => {
-    console.log("Deleted!")
+    deleteMutation.mutate(id, {
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["tasks"] })
+        toast.success("Delete successfully!")
+      },
+      onError: (error) => {
+        toast.error(handleErrorMessage(error))
+      },
+    })
   }
 
   return (
@@ -104,7 +118,8 @@ export function TaskItem({
             </Badge>
             <span>•</span>
             <span className={isOverdue ? "font-medium text-destructive" : ""}>
-              {isOverdue ? "Expired: " : "Expires at: "} {expiredAt}
+              {isOverdue ? "Expired: " : "Expires at: "}{" "}
+              {format(expiredAt, DATETIME_FORMAT)}
             </span>
           </div>
         </ItemContent>
