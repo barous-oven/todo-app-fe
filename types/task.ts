@@ -41,3 +41,16 @@ export const getTaskDetailResponseSchema = z.object({
 export type TGetTaskDetailResponseSchemaDto = z.infer<
   typeof getTaskDetailResponseSchema
 >
+
+export const createTaskFormSchema = getTaskDetailResponseSchema.omit({
+  id: true,
+  status: true,
+})
+
+export type CreateTaskFormValues = z.infer<typeof createTaskFormSchema>
+
+export const updateTaskFormSchema = getTaskDetailResponseSchema.omit({
+  id: true,
+})
+
+export type UpdateTaskFormValues = z.infer<typeof updateTaskFormSchema>
