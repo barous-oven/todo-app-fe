@@ -69,7 +69,7 @@ export default function TasksPage() {
   const { data, isLoading, isError, error } = useQuery<
     ApiResponse<TGetTaskResponseSchemaDto[]>
   >({
-    queryKey: ["tasks", queryParams, accessToken],
+    queryKey: ["tasks", queryParams],
     queryFn: async () => {
       const response = await fetchData<TGetTaskResponseSchemaDto[]>({
         url: "/tasks",

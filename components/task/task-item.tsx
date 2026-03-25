@@ -9,7 +9,6 @@ import handleErrorMessage from "@/lib/handle-error-message"
 import { taskStatusMap, TGetTaskResponseSchemaDto } from "@/types/task"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { format } from "date-fns"
-import { useState } from "react"
 import { toast } from "sonner"
 import { useAuth } from "../auth-provider"
 import {
@@ -33,12 +32,12 @@ export function TaskItem({
   expiredAt,
   onEdit,
 }: TaskItemProps) {
-  const [isCompleted, setIsCompleted] = useState(status === "COMPLETED")
   const { accessToken } = useAuth()
-  const isOverdue = new Date(expiredAt) < new Date() && !isCompleted
   const queryClient = useQueryClient()
-
   const updateMutation = useTaskUpdate(id)
+
+  const isCompleted = status === "COMPLETED"
+  const isOverdue = new Date(expiredAt) < new Date() && !isCompleted
 
   const toggleComplete = async () => {
     try {
@@ -53,7 +52,6 @@ export function TaskItem({
       updateMutation.mutate(body, {
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: ["tasks"] })
-          setIsCompleted(!isCompleted)
         },
         onError: (error) => {
           toast.error(handleErrorMessage(error))

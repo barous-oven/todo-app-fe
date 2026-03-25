@@ -15,13 +15,13 @@ import { FormProvider, useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { useAuth } from "../auth-provider"
 
+import { CREATE_TASK_FORM_METADATA } from "@/constants/task-form-meta"
 import { fetchData } from "@/lib/fetch-data"
 import handleErrorMessage from "@/lib/handle-error-message"
-import { IFormItemProps } from "@/types/form-item"
 import {
   createTaskFormSchema,
   CreateTaskFormValues,
-  TGetTaskDetailResponseSchemaDto
+  TGetTaskDetailResponseSchemaDto,
 } from "@/types/task"
 import { FormItem } from "../form/form-item"
 import { Button } from "../ui/button"
@@ -31,30 +31,6 @@ type CreateTaskDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
 }
-
-const fieldInfor: IFormItemProps<TGetTaskDetailResponseSchemaDto>[] = [
-  {
-    name: "title",
-    type: "text",
-    label: "Title",
-    props: {
-      placeholder: "Title",
-    },
-  },
-  {
-    name: "description",
-    type: "text",
-    label: "Description",
-    props: {
-      placeholder: "Description",
-    },
-  },
-  {
-    name: "expiredAt",
-    label: "Expire At",
-    type: "datetime-picker",
-  },
-]
 
 export function CreateTaskDialog({
   open,
@@ -123,7 +99,7 @@ export function CreateTaskDialog({
 
           <FormProvider {...form}>
             <FieldGroup>
-              {fieldInfor.map((item) => (
+              {CREATE_TASK_FORM_METADATA.map((item) => (
                 <FormItem key={item.name} {...item} />
               ))}
             </FieldGroup>
