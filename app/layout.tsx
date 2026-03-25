@@ -4,6 +4,9 @@ import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { cn } from "@/lib/utils"
 import { Toaster } from "sonner"
+import { cookies } from "next/headers"
+import { AuthProvider } from "@/components/auth-provider"
+import QueryProvider from "@/providers/query-provider"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" })
 
@@ -12,11 +15,13 @@ const fontMono = Geist_Mono({
   variable: "--font-mono",
 })
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const cookieStore = await cookies()
+  const accessToken = cookieStore.get("accessToken")?.value ?? null
   return (
     <html
       lang="en"
@@ -29,16 +34,20 @@ export default function RootLayout({
       )}
     >
       <body>
-        <ThemeProvider>
-          {children}
-          <Toaster
-            position="top-right"
-            richColors
-            closeButton
-            expand={false}
-            duration={3000}
-          />
-        </ThemeProvider>
+        <AuthProvider initialAccessToken={accessToken}>
+          <QueryProvider>
+            <ThemeProvider>
+              {children}
+              <Toaster
+                position="top-right"
+                richColors
+                closeButton
+                expand={false}
+                duration={3000}
+              />
+            </ThemeProvider>
+          </QueryProvider>
+        </AuthProvider>
       </body>
     </html>
   )

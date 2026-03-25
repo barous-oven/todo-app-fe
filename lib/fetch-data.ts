@@ -1,14 +1,12 @@
-type PaginationMeta = {
-  total: number
-  totalPage: number
-}
+import { TMeta } from "@/types/pagination"
+import { buildQuery } from "./build-query"
 
-type ApiResponse<T> = {
+export type ApiResponse<T> = {
   status: number
   message?: string | string[]
   error?: string
   data?: T
-  meta?: PaginationMeta
+  meta?: TMeta
 }
 
 type ApiRequest = {
@@ -25,13 +23,7 @@ export async function fetchData<T>(req: ApiRequest): Promise<ApiResponse<T>> {
   let finalUrl = BASE_URL + req.url
 
   if (req.queryParams) {
-    const params = new URLSearchParams()
-
-    for (const [key, value] of Object.entries(req.queryParams)) {
-      params.append(key, value.toString())
-    }
-
-    finalUrl = `${req.url}?${params.toString()}`
+    finalUrl += `?${buildQuery(req.queryParams)}`
   }
 
   const response = await fetch(finalUrl, {

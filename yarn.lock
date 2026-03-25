@@ -937,7 +937,7 @@
   resolved "https://registry.yarnpkg.com/@radix-ui/react-context/-/react-context-1.1.2.tgz#61628ef269a433382c364f6f1e3788a6dc213a36"
   integrity sha512-jCi/QKUM2r1Ju5a3J64TH2A5SpKAgh0LpknyqdQ4m6DCV0xJ2HG1xARRwNGPQfi1SLdLWZ1OJz6F4OMBBNiGJA==
 
-"@radix-ui/react-dialog@1.1.15", "@radix-ui/react-dialog@^1.1.1", "@radix-ui/react-dialog@^1.1.15":
+"@radix-ui/react-dialog@1.1.15", "@radix-ui/react-dialog@^1.1.1":
   version "1.1.15"
   resolved "https://registry.yarnpkg.com/@radix-ui/react-dialog/-/react-dialog-1.1.15.tgz#1de3d7a7e9a17a9874d29c07f5940a18a119b632"
   integrity sha512-TCglVRtzlffRNxRMEyR36DGBLJpeusFcgMVD9PZEzAKnUs1lKCgX5u9BmC2Yg+LL9MgZDugFFs1Vl+Jp4t/PGw==
@@ -1613,6 +1613,18 @@
     "@tailwindcss/oxide" "4.2.2"
     postcss "^8.5.6"
     tailwindcss "4.2.2"
+
+"@tanstack/query-core@5.95.2":
+  version "5.95.2"
+  resolved "https://registry.yarnpkg.com/@tanstack/query-core/-/query-core-5.95.2.tgz#9e3299d0c1c8785dd9e3d0cac1993e45f35113f2"
+  integrity sha512-o4T8vZHZET4Bib3jZ/tCW9/7080urD4c+0/AUaYVpIqOsr7y0reBc1oX3ttNaSW5mYyvZHctiQ/UOP2PfdmFEQ==
+
+"@tanstack/react-query@^5.95.2":
+  version "5.95.2"
+  resolved "https://registry.yarnpkg.com/@tanstack/react-query/-/react-query-5.95.2.tgz#7daf77342a4e374c22fad88bb98ea13fc19ae086"
+  integrity sha512-/wGkvLj/st5Ud1Q76KF1uFxScV7WeqN1slQx5280ycwAyYkIPGaRZAEgHxe3bjirSd5Zpwkj6zNcR4cqYni/ZA==
+  dependencies:
+    "@tanstack/query-core" "5.95.2"
 
 "@ts-morph/common@~0.27.0":
   version "0.27.0"
