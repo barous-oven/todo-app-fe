@@ -12,6 +12,8 @@ export const taskStatusMap = {
   COMPLETED: "completed",
 }
 
+export type TTaskStatus = "PENDING" | "IN_PROGRESS" | "COMPLETED"
+
 export const getTaskResponseSchema = z.object({
   id: z.string().uuid(),
 

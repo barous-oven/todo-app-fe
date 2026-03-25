@@ -13,6 +13,10 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu"
 import { FieldLabel } from "../ui/field"
+import { fetchData } from "@/lib/fetch-data"
+import { useAuth } from "../auth-provider"
+import { toast } from "sonner"
+import handleErrorMessage from "@/lib/handle-error-message"
 
 type TaskItemProps = TGetTaskResponseSchemaDto & {
   onEdit: () => void
@@ -25,13 +29,41 @@ export function TaskItem({
   expiredAt,
   onEdit,
 }: TaskItemProps) {
-  // TODO integrate api
   const [isCompleted, setIsCompleted] = useState(status === "COMPLETED")
-
+  const { accessToken } = useAuth()
   const isOverdue = new Date(expiredAt) < new Date() && !isCompleted
 
-  const toggleComplete = () => {
-    setIsCompleted(!isCompleted)
+  const toggleComplete = async () => {
+    try {
+      if (!isCompleted) {
+        status = "COMPLETED"
+      } else {
+        status = "PENDING"
+      }
+
+      const body = {
+        id,
+        status,
+        expiredAt,
+      }
+
+      const response = await fetchData<TGetTaskResponseSchemaDto[]>({
+        url: `/tasks/${id}`,
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body,
+      })
+
+      if (!response.data) {
+        throw new Error("Something went wrong!")
+      }
+      setIsCompleted(!isCompleted)
+    } catch (error) {
+      toast.error(handleErrorMessage(error))
+    }
   }
 
   const onDelete = () => {
