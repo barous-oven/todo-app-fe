@@ -1,7 +1,7 @@
 import { TMeta } from "@/types/pagination"
 import { buildQuery } from "./build-query"
 
-type ApiResponse<T> = {
+export type ApiResponse<T> = {
   status: number
   message?: string | string[]
   error?: string

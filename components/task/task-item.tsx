@@ -17,6 +17,7 @@ import { fetchData } from "@/lib/fetch-data"
 import { useAuth } from "../auth-provider"
 import { toast } from "sonner"
 import handleErrorMessage from "@/lib/handle-error-message"
+import { QueryClient, useQueryClient } from "@tanstack/react-query"
 
 type TaskItemProps = TGetTaskResponseSchemaDto & {
   onEdit: () => void
@@ -32,21 +33,19 @@ export function TaskItem({
   const [isCompleted, setIsCompleted] = useState(status === "COMPLETED")
   const { accessToken } = useAuth()
   const isOverdue = new Date(expiredAt) < new Date() && !isCompleted
+  const queryClient = useQueryClient()
 
   const toggleComplete = async () => {
     try {
-      if (!isCompleted) {
-        status = "COMPLETED"
-      } else {
-        status = "PENDING"
-      }
+      status = !isCompleted ? "COMPLETED" : "PENDING"
 
-      const body = {
-        id,
+      const body: Omit<TGetTaskResponseSchemaDto, "id"> = {
+        title,
         status,
         expiredAt,
       }
 
+      // TODO: useMutation
       const response = await fetchData<TGetTaskResponseSchemaDto[]>({
         url: `/tasks/${id}`,
         method: "PUT",
@@ -55,6 +54,10 @@ export function TaskItem({
           Authorization: `Bearer ${accessToken}`,
         },
         body,
+      })
+
+      await queryClient.invalidateQueries({
+        queryKey: ["tasks"],
       })
 
       if (!response.data) {

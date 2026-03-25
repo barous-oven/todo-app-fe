@@ -1,6 +1,7 @@
 "use client"
 
 import { useAuth } from "@/components/auth-provider"
+import { CustomDropDown } from "@/components/custom-dropdown/custom-dropdown"
 import { PageHeader } from "@/components/page-header"
 import { CommonPagination } from "@/components/pagination"
 import { TaskDialog } from "@/components/task/task-dialog"
@@ -23,9 +24,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { fetchData } from "@/lib/fetch-data"
+import { ApiResponse, fetchData } from "@/lib/fetch-data"
 import handleErrorMessage from "@/lib/handle-error-message"
-import { TMeta } from "@/types/pagination"
 import {
   TASK_STATUS_LABEL,
   TGetTaskResponseSchemaDto,
@@ -35,14 +35,11 @@ import { useQuery } from "@tanstack/react-query"
 import { useEffect, useState } from "react"
 import { toast } from "sonner"
 
-type TTasksResponse = {
-  data: TGetTaskResponseSchemaDto[]
-  meta: TMeta
-}
-
-type TFilterOptions = {
+type TQueryOptions = {
   title: string
-  status?: TTaskStatus
+  status?: TTaskStatus | "ALL"
+  page: number
+  limit: number
 }
 
 export default function TasksPage() {
@@ -50,9 +47,10 @@ export default function TasksPage() {
   const [openTaskDialog, setOpenTaskDialog] = useState(false)
   const [selectedTask, setSelectedTask] =
     useState<TGetTaskResponseSchemaDto | null>(null)
-  const [currentPage, setCurrentPage] = useState(1)
-  const [filterOption, setFilterOption] = useState<TFilterOptions>({
+  const [queryParams, setQueryParams] = useState<TQueryOptions>({
     title: "",
+    page: 1,
+    limit: 5,
   })
 
   function onEdit(task: TGetTaskResponseSchemaDto): void {
@@ -60,31 +58,29 @@ export default function TasksPage() {
     setOpenTaskDialog(true)
   }
 
-  function setStatus(v: TTaskStatus | "ALL") {
-    setFilterOption((prev) => {
-      if (v === "ALL") {
-        const { status, ...rest } = prev
+  function setQuery(value: Partial<TQueryOptions>): void {
+    setQueryParams((prev) => {
+      const finalQuery = { ...prev, ...value }
+      if (!value.page) {
+        finalQuery.page = 1
+      }
+      if (finalQuery.status === "ALL") {
+        const { status, ...rest } = finalQuery
         return rest
       }
-
-      return {
-        ...prev,
-        status: v,
-      }
+      return finalQuery
     })
   }
 
-  const { data, isLoading, isError, error } = useQuery<TTasksResponse>({
-    queryKey: ["tasks", currentPage, filterOption],
+  const { data, isLoading, isError, error } = useQuery<
+    ApiResponse<TGetTaskResponseSchemaDto[]>
+  >({
+    queryKey: ["tasks", queryParams],
     queryFn: async () => {
       const response = await fetchData<TGetTaskResponseSchemaDto[]>({
         url: "/tasks",
         method: "GET",
-        queryParams: {
-          limit: 5,
-          page: currentPage,
-          ...filterOption,
-        },
+        queryParams,
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
@@ -95,10 +91,7 @@ export default function TasksPage() {
         throw new Error("Something went wrong!")
       }
 
-      return {
-        data: response.data,
-        meta: response.meta,
-      }
+      return response
     },
     enabled: !!accessToken,
   })
@@ -127,39 +120,32 @@ export default function TasksPage() {
         <Input
           placeholder="Search tasks..."
           type="search"
-          onChange={(e) =>
-            setFilterOption({ ...filterOption, title: e.target.value })
-          }
+          onChange={(e) => setQuery({ title: e.target.value })}
         />
-        <Button variant="outline" size="icon">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline">...</Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuGroup>
-                <DropdownMenuLabel>Action</DropdownMenuLabel>
-                <Select value={filterOption.status} onValueChange={setStatus}>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectItem key="ALL" value="ALL">
-                        All
-                      </SelectItem>
-                      {TASK_STATUS_LABEL?.map((item) => (
-                        <SelectItem key={item.label} value={item.value}>
-                          {item.label}
-                        </SelectItem>
-                      )) || []}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </DropdownMenuGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </Button>
+        <CustomDropDown buttonLabel="..." label="Filter">
+          <Select
+            value={queryParams.status}
+            onValueChange={(status: TTaskStatus | "ALL") =>
+              setQuery({ status })
+            }
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Select status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectItem key="ALL" value="ALL">
+                  All
+                </SelectItem>
+                {TASK_STATUS_LABEL.map((item) => (
+                  <SelectItem key={item.label} value={item.value}>
+                    {item.label}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </CustomDropDown>
       </div>
 
       <ItemGroup className="gap-3">
@@ -177,7 +163,12 @@ export default function TasksPage() {
           </div>
         )}
 
-        {meta && <CommonPagination {...meta} onPageChange={setCurrentPage} />}
+        {meta && (
+          <CommonPagination
+            {...meta}
+            onPageChange={(page) => setQuery({ page })}
+          />
+        )}
       </ItemGroup>
 
       <TaskDialog
