@@ -29,18 +29,20 @@ export default function RootTemplate({ children }: { children: ReactNode }) {
               </Breadcrumb>
             </div>
             <div className="flex items-center gap-1.5">
-              <ProfileDropdown
-                trigger={
-                  <Button variant="ghost" size="icon" className="size-9.5">
-                    {user && (
-                      <Avatar className="size-9.5 rounded-md">
-                        <AvatarImage src="https://cdn.shadcnstudio.com/ss-assets/avatar/avatar-1.png" />
-                        <AvatarFallback>JD</AvatarFallback>
-                      </Avatar>
-                    )}
-                  </Button>
-                }
-              />
+              {user && (
+                <ProfileDropdown
+                  trigger={
+                    <Button variant="ghost" size="icon" className="size-9.5">
+                      {user && (
+                        <Avatar className="size-9.5 rounded-md">
+                          <AvatarImage src="https://cdn.shadcnstudio.com/ss-assets/avatar/avatar-1.png" />
+                          <AvatarFallback>JD</AvatarFallback>
+                        </Avatar>
+                      )}
+                    </Button>
+                  }
+                />
+              )}
             </div>
           </div>
         </header>
