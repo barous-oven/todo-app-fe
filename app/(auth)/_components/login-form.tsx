@@ -4,7 +4,6 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { FormProvider, useForm } from "react-hook-form"
 
 import { setTokens } from "@/app/actions/auth"
-import { useAuth } from "@/components/auth-provider"
 import { FormItem } from "@/components/form/form-item"
 import { Button } from "@/components/ui/button"
 import {
@@ -23,13 +22,12 @@ import {
   TLoginRequestDto,
   TLoginResponseDto,
 } from "@/types/login"
+import { useQueryClient } from "@tanstack/react-query"
 import Link from "next/link"
-import { redirect } from "next/navigation"
 import { toast } from "sonner"
 
 export default function LoginForm() {
-  const { setAccessToken } = useAuth()
-
+  const queryClient = useQueryClient()
   const form = useForm<TLoginRequestDto>({
     resolver: zodResolver(loginRequestSchema),
     defaultValues: {
@@ -56,8 +54,7 @@ export default function LoginForm() {
       const { accessToken, refreshToken } = response.data
 
       await setTokens(accessToken, refreshToken)
-      setAccessToken(accessToken)
-      redirect("/")
+      await queryClient.invalidateQueries({ queryKey: ["me"] })
     } catch (e) {
       toast.error(handleErrorMessage(e))
     }

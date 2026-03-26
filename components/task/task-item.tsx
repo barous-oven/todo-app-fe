@@ -32,7 +32,6 @@ export function TaskItem({
   expiredAt,
   onEdit,
 }: TaskItemProps) {
-  const { accessToken } = useAuth()
   const queryClient = useQueryClient()
   const updateMutation = useTaskUpdate(id)
 
@@ -68,10 +67,6 @@ export function TaskItem({
       fetchData({
         url: `/tasks/${taskId}`,
         method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
       })
     },
   })

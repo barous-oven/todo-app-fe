@@ -1,6 +1,5 @@
 "use client"
 
-import { useAuth } from "@/components/auth-provider"
 import { CustomDropDown } from "@/components/custom-dropdown/custom-dropdown"
 import { PageHeader } from "@/components/page-header"
 import { CommonPagination } from "@/components/pagination"
@@ -36,7 +35,6 @@ type TQueryOptions = {
 }
 
 export default function TasksPage() {
-  const { accessToken } = useAuth()
   const [openCreateDialog, setOpenCreateDialog] = useState(false)
   const [openUpdateDialog, setOpenUpdateDialog] = useState(false)
   const [selectedTask, setSelectedTask] =
@@ -73,12 +71,7 @@ export default function TasksPage() {
     queryFn: async () => {
       const response = await fetchData<TGetTaskResponseSchemaDto[]>({
         url: "/tasks",
-        method: "GET",
         queryParams,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
       })
 
       if (!response.data || !response.meta) {
@@ -87,7 +80,6 @@ export default function TasksPage() {
 
       return response
     },
-    enabled: !!accessToken,
   })
 
   useEffect(() => {

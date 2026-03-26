@@ -22,12 +22,11 @@ type Props = {
 }
 
 function ProfileDropdown({ trigger, defaultOpen, align = "end" }: Props) {
-  const { setAccessToken, user } = useAuth()
+  const { user, setUser } = useAuth()
 
-  function onLogout() {
-    setAccessToken("")
-    removeTokens()
-    redirect("/login")
+  async function onLogout() {
+    await removeTokens()
+    setUser()
   }
 
   return (

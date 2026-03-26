@@ -22,34 +22,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const cookieStore = await cookies()
-  const accessToken = cookieStore.get("accessToken")?.value ?? ""
-
-  let user: TMeResponseDto | undefined = undefined
-
-  if (accessToken) {
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/auth/me`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      )
-
-      if (!response.ok) {
-        throw new Error("Something went wrong!")
-      }
-
-      const jsonData = await response.json()
-
-      user = jsonData.data
-    } catch {
-      user = undefined
-    }
-  }
-
   return (
     <html
       lang="en"
@@ -63,7 +35,7 @@ export default async function RootLayout({
     >
       <body>
         <QueryProvider>
-          <AuthProvider initialAccessToken={accessToken} initialUser={user}>
+          <AuthProvider>
             <ThemeProvider>
               {children}
               <Toaster

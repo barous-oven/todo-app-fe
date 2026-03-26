@@ -36,7 +36,6 @@ export function CreateTaskDialog({
   open,
   onOpenChange,
 }: CreateTaskDialogProps) {
-  const { accessToken } = useAuth()
   const queryClient = useQueryClient()
 
   const form = useForm<CreateTaskFormValues>({
@@ -56,7 +55,6 @@ export function CreateTaskDialog({
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
         },
         body,
       })
