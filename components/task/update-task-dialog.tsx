@@ -39,8 +39,6 @@ export function UpdateTaskDialog({
   onOpenChange,
   taskId,
 }: UpdateTaskDialogProps) {
-  if (!taskId) return <></>
-  const { accessToken } = useAuth()
   const queryClient = useQueryClient()
   const form = useForm<UpdateTaskFormValues>({
     resolver: zodResolver(updateTaskFormSchema),
@@ -51,39 +49,31 @@ export function UpdateTaskDialog({
       status: "PENDING",
     },
   })
-  const { data } = useQuery<ApiResponse<TGetTaskDetailResponseSchemaDto>>({
+  useQuery<ApiResponse<TGetTaskDetailResponseSchemaDto>>({
     queryKey: ["tasks", taskId],
     queryFn: async () => {
       const response = await fetchData<TGetTaskDetailResponseSchemaDto>({
         url: `/tasks/${taskId}`,
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
       })
 
       if (!response.data) {
         throw new Error("Something went wrong!")
       }
+      const task = response.data
+
+      form.reset({
+        title: task.title ?? "",
+        description: task.description ?? "",
+        expiredAt: task.expiredAt ?? new Date().toISOString(),
+        status: task.status ?? "PENDING",
+      })
 
       return response
     },
-    enabled: open && !!accessToken && !!taskId,
+    enabled: open && !!taskId,
   })
-  useEffect(() => {
-    const task = data?.data
-    if (!task) return
 
-    form.reset({
-      title: task.title ?? "",
-      description: task.description ?? "",
-      expiredAt: task.expiredAt ?? new Date().toISOString(),
-      status: task.status ?? "PENDING",
-    })
-  }, [data, form])
-
-  const { isPending, mutate } = useTaskUpdate(taskId)
+  const { isPending, mutate } = useTaskUpdate(taskId!)
 
   function onSubmit(data: UpdateTaskFormValues) {
     mutate(data, {

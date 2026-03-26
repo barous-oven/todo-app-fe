@@ -1,12 +1,14 @@
-import { Geist, Geist_Mono, Inter } from "next/font/google"
-
+import { Geist_Mono, Inter } from "next/font/google"
 import "./globals.css"
+
 import { ThemeProvider } from "@/components/theme-provider"
 import { cn } from "@/lib/utils"
-import { Toaster } from "sonner"
 import { cookies } from "next/headers"
+import { Toaster } from "sonner"
+
 import { AuthProvider } from "@/components/auth-provider"
 import QueryProvider from "@/providers/query-provider"
+import { TMeResponseDto } from "@/types/me"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" })
 
@@ -20,8 +22,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const cookieStore = await cookies()
-  const accessToken = cookieStore.get("accessToken")?.value ?? null
   return (
     <html
       lang="en"
@@ -34,8 +34,8 @@ export default async function RootLayout({
       )}
     >
       <body>
-        <AuthProvider initialAccessToken={accessToken}>
-          <QueryProvider>
+        <QueryProvider>
+          <AuthProvider>
             <ThemeProvider>
               {children}
               <Toaster
@@ -46,8 +46,8 @@ export default async function RootLayout({
                 duration={3000}
               />
             </ThemeProvider>
-          </QueryProvider>
-        </AuthProvider>
+          </AuthProvider>
+        </QueryProvider>
       </body>
     </html>
   )
