@@ -1,5 +1,6 @@
 import { TMeta } from "@/types/pagination"
 import { buildQuery } from "./build-query"
+import { removeTokens } from "@/app/actions/auth"
 
 export type ApiResponse<T> = {
   status: number
@@ -35,6 +36,9 @@ export async function fetchData<T>(req: ApiRequest): Promise<ApiResponse<T>> {
   const responseJson = await response.json().catch(() => null)
 
   if (!response.ok) {
+    if (response.status === 401) {
+      await removeTokens()
+    }
     throw new Error(responseJson?.message || response.statusText)
   }
 

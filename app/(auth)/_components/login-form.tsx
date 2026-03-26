@@ -3,6 +3,8 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { FormProvider, useForm } from "react-hook-form"
 
+import { setTokens } from "@/app/actions/auth"
+import { useAuth } from "@/components/auth-provider"
 import { FormItem } from "@/components/form/form-item"
 import { Button } from "@/components/ui/button"
 import {
@@ -14,19 +16,19 @@ import {
 } from "@/components/ui/card"
 import { FieldGroup } from "@/components/ui/field"
 import { fetchData } from "@/lib/fetch-data"
+import handleErrorMessage from "@/lib/handle-error-message"
+import { IFormItemProps } from "@/types/form-item"
 import {
   loginRequestSchema,
   TLoginRequestDto,
   TLoginResponseDto,
 } from "@/types/login"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { redirect } from "next/navigation"
 import { toast } from "sonner"
-import handleErrorMessage from "@/lib/handle-error-message"
-import { IFormItemProps } from "@/types/form-item"
 
 export default function LoginForm() {
-  const router = useRouter()
+  const { setAccessToken } = useAuth()
 
   const form = useForm<TLoginRequestDto>({
     resolver: zodResolver(loginRequestSchema),
@@ -51,9 +53,11 @@ export default function LoginForm() {
         throw new Error("Something went wrong!")
       }
 
-      cookieStore.set("accessToken", response.data.accessToken)
-      cookieStore.set("refreshToken", response.data.refreshToken)
-      router.push("/")
+      const { accessToken, refreshToken } = response.data
+
+      await setTokens(accessToken, refreshToken)
+      setAccessToken(accessToken)
+      redirect("/")
     } catch (e) {
       toast.error(handleErrorMessage(e))
     }
