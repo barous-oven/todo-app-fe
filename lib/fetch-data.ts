@@ -21,32 +21,32 @@ type ApiRequest = {
 
 const BASE_URL = "/api"
 
-async function handleRefreshToken(
-  refreshToken: string
-): Promise<TLoginResponseDto> {
-  const response = await fetch(`${BASE_URL}/auth/refresh`, {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${refreshToken}`,
-    },
-  })
+let promiseRefresh: Promise<void> | null = null
 
-  const responseJson = await response.json().catch(() => null)
+export async function handleRefreshToken(refreshToken: string): Promise<void> {
+  if (!promiseRefresh) {
+    promiseRefresh = (async () => {
+      const response = await fetch(`${BASE_URL}/auth/refresh`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${refreshToken}`,
+        },
+      })
 
-  if (!response.ok) {
-    throw new Error(responseJson?.message || "Refresh token failed")
+      const responseJson = await response.json().catch(() => null)
+
+      if (!response.ok) {
+        throw new Error(responseJson?.message || "Refresh token failed")
+      }
+
+      const tokens = responseJson.data
+      await setTokens(tokens.accessToken, tokens.refreshToken)
+    })()
   }
 
-  return responseJson.data
-}
-
-let promiseRefresh: Promise<TLoginResponseDto> | null = null
-
-async function handleSingleTonRefreshToken(
-  refreshToken: string
-): Promise<TLoginResponseDto> {
-  if (!promiseRefresh) promiseRefresh = handleRefreshToken(refreshToken)
-  return promiseRefresh.finally(() => null)
+  return promiseRefresh.finally(() => {
+    promiseRefresh = null
+  })
 }
 
 export async function fetchData<T>(req: ApiRequest): Promise<ApiResponse<T>> {
@@ -78,8 +78,7 @@ export async function fetchData<T>(req: ApiRequest): Promise<ApiResponse<T>> {
   }
   if (response.status === 401 && refreshToken) {
     try {
-      const tokens = await handleSingleTonRefreshToken(refreshToken)
-      await setTokens(tokens.accessToken, tokens.refreshToken)
+      await handleRefreshToken(refreshToken)
       return fetchData<T>(req)
     } catch {
       await removeTokens()
