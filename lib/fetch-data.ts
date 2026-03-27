@@ -40,16 +40,6 @@ async function refreshTokens(refreshToken: string) {
   await setTokens(tokens.accessToken, tokens.refreshToken)
 }
 
-export async function handleRefreshToken(refreshToken: string): Promise<void> {
-  if (!promiseRefresh) {
-    return refreshTokens(refreshToken)
-  }
-
-  return promiseRefresh.finally(() => {
-    promiseRefresh = null
-  })
-}
-
 export async function fetchData<T>(req: ApiRequest): Promise<ApiResponse<T>> {
   let finalUrl = BASE_URL + req.url
   const { accessToken, refreshToken } = await getTokens()
@@ -79,7 +69,13 @@ export async function fetchData<T>(req: ApiRequest): Promise<ApiResponse<T>> {
   }
   if (response.status === 401 && refreshToken) {
     try {
-      await handleRefreshToken(refreshToken)
+      // handle refresh token
+      if (!promiseRefresh) {
+        promiseRefresh = refreshTokens(refreshToken)
+      }
+      await promiseRefresh.finally(() => {
+        promiseRefresh = null
+      })
       return fetchData<T>(req)
     } catch {
       await removeTokens()
