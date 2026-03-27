@@ -1,8 +1,7 @@
-import { TMeta } from "@/types/pagination"
-import { buildQuery } from "./build-query"
 import { getTokens, removeTokens, setTokens } from "@/app/actions/auth"
 import { TLoginResponseDto } from "@/types/login"
-import { redirect } from "next/navigation"
+import { TMeta } from "@/types/pagination"
+import { buildQuery } from "./build-query"
 
 export type ApiResponse<T> = {
   status: number
@@ -41,6 +40,15 @@ async function handleRefreshToken(
   return responseJson.data
 }
 
+let promiseRefresh: Promise<TLoginResponseDto> | null = null
+
+async function handleSingleTonRefreshToken(
+  refreshToken: string
+): Promise<TLoginResponseDto> {
+  if (!promiseRefresh) promiseRefresh = handleRefreshToken(refreshToken)
+  return promiseRefresh.finally(() => null)
+}
+
 export async function fetchData<T>(req: ApiRequest): Promise<ApiResponse<T>> {
   let finalUrl = BASE_URL + req.url
   const { accessToken, refreshToken } = await getTokens()
@@ -60,29 +68,23 @@ export async function fetchData<T>(req: ApiRequest): Promise<ApiResponse<T>> {
 
   const responseJson = await response.json().catch(() => null)
 
-  if (!response.ok) {
-    if (response.status === 401) {
-      if (!refreshToken) {
-        await removeTokens()
-        throw new Error("Session expired")
-      }
-
-      try {
-        const tokens = await handleRefreshToken(refreshToken)
-        await setTokens(tokens.accessToken, tokens.refreshToken)
-        return fetchData<T>(req)
-      } catch {
-        await removeTokens()
-      }
+  if (response.ok) {
+    return {
+      status: response.status,
+      message: responseJson?.message || "Success",
+      data: responseJson?.data ?? responseJson,
+      meta: responseJson?.meta,
     }
-
-    throw new Error(responseJson?.message || response.statusText)
+  }
+  if (response.status === 401 && refreshToken) {
+    try {
+      const tokens = await handleSingleTonRefreshToken(refreshToken)
+      await setTokens(tokens.accessToken, tokens.refreshToken)
+      return fetchData<T>(req)
+    } catch {
+      await removeTokens()
+    }
   }
 
-  return {
-    status: response.status,
-    message: responseJson?.message || "Success",
-    data: responseJson?.data ?? responseJson,
-    meta: responseJson?.meta,
-  }
+  throw new Error(responseJson?.message || response.statusText)
 }
