@@ -1,5 +1,4 @@
 import { getTokens, removeTokens, setTokens } from "@/app/actions/auth"
-import { TLoginResponseDto } from "@/types/login"
 import { TMeta } from "@/types/pagination"
 import { buildQuery } from "./build-query"
 
@@ -23,25 +22,27 @@ const BASE_URL = "/api"
 
 let promiseRefresh: Promise<void> | null = null
 
+async function refreshTokens(refreshToken: string) {
+  const response = await fetch(`${BASE_URL}/auth/refresh`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${refreshToken}`,
+    },
+  })
+
+  const responseJson = await response.json().catch(() => null)
+
+  if (!response.ok) {
+    throw new Error(responseJson?.message || "Refresh token failed")
+  }
+
+  const tokens = responseJson.data
+  await setTokens(tokens.accessToken, tokens.refreshToken)
+}
+
 export async function handleRefreshToken(refreshToken: string): Promise<void> {
   if (!promiseRefresh) {
-    promiseRefresh = (async () => {
-      const response = await fetch(`${BASE_URL}/auth/refresh`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${refreshToken}`,
-        },
-      })
-
-      const responseJson = await response.json().catch(() => null)
-
-      if (!response.ok) {
-        throw new Error(responseJson?.message || "Refresh token failed")
-      }
-
-      const tokens = responseJson.data
-      await setTokens(tokens.accessToken, tokens.refreshToken)
-    })()
+    return refreshTokens(refreshToken)
   }
 
   return promiseRefresh.finally(() => {
