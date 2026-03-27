@@ -1,8 +1,6 @@
+import { getTokens, removeTokens, setTokens } from "@/app/actions/auth"
 import { TMeta } from "@/types/pagination"
 import { buildQuery } from "./build-query"
-import { getTokens, removeTokens, setTokens } from "@/app/actions/auth"
-import { TLoginResponseDto } from "@/types/login"
-import { redirect } from "next/navigation"
 
 export type ApiResponse<T> = {
   status: number
@@ -22,9 +20,9 @@ type ApiRequest = {
 
 const BASE_URL = "/api"
 
-async function handleRefreshToken(
-  refreshToken: string
-): Promise<TLoginResponseDto> {
+let promiseRefresh: Promise<void> | null = null
+
+async function refreshTokens(refreshToken: string) {
   const response = await fetch(`${BASE_URL}/auth/refresh`, {
     method: "GET",
     headers: {
@@ -38,7 +36,8 @@ async function handleRefreshToken(
     throw new Error(responseJson?.message || "Refresh token failed")
   }
 
-  return responseJson.data
+  const tokens = responseJson.data
+  await setTokens(tokens.accessToken, tokens.refreshToken)
 }
 
 export async function fetchData<T>(req: ApiRequest): Promise<ApiResponse<T>> {
@@ -60,29 +59,30 @@ export async function fetchData<T>(req: ApiRequest): Promise<ApiResponse<T>> {
 
   const responseJson = await response.json().catch(() => null)
 
-  if (!response.ok) {
-    if (response.status === 401) {
-      if (!refreshToken) {
-        await removeTokens()
-        throw new Error("Session expired")
-      }
-
-      try {
-        const tokens = await handleRefreshToken(refreshToken)
-        await setTokens(tokens.accessToken, tokens.refreshToken)
-        return fetchData<T>(req)
-      } catch {
-        await removeTokens()
-      }
+  if (response.ok) {
+    return {
+      status: response.status,
+      message: responseJson?.message || "Success",
+      data: responseJson?.data ?? responseJson,
+      meta: responseJson?.meta,
     }
+  }
+  if (response.status === 401 && refreshToken) {
+    try {
+      // handle refresh token
+      if (!promiseRefresh) {
+        refreshTokens(refreshToken)
+      } else {
+        promiseRefresh.finally(() => {
+          promiseRefresh = null
+        })
+      }
 
-    throw new Error(responseJson?.message || response.statusText)
+      return fetchData<T>(req)
+    } catch {
+      await removeTokens()
+    }
   }
 
-  return {
-    status: response.status,
-    message: responseJson?.message || "Success",
-    data: responseJson?.data ?? responseJson,
-    meta: responseJson?.meta,
-  }
+  throw new Error(responseJson?.message || response.statusText)
 }
