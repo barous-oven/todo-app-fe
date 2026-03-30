@@ -24,18 +24,13 @@ export function TaskItemPreview({
   expiredAt,
   onDelete,
 }: TaskItemProps) {
-  const isCompleted = status === "COMPLETED"
-  const isOverdue = new Date(expiredAt) < new Date() && !isCompleted
+  const isOverdue = new Date(expiredAt) < new Date()
 
   return (
     <Item variant="outline" className="group w-full py-3">
       <ItemContent className="flex flex-col gap-3">
         <FieldLabel className="w-full space-y-1" id={id ?? title}>
-          <ItemTitle
-            className={`transition-all duration-300 ${
-              isCompleted ? "text-muted-foreground line-through opacity-60" : ""
-            }`}
-          >
+          <ItemTitle className={`transition-all duration-300`}>
             {title}
           </ItemTitle>
         </FieldLabel>
@@ -44,10 +39,7 @@ export function TaskItemPreview({
           {description ? (
             <p className="text-sm text-muted-foreground">{description}</p>
           ) : null}
-          <Badge
-            variant={isCompleted ? "secondary" : "outline"}
-            className="capitalize"
-          >
+          <Badge variant="outline" className="capitalize">
             {taskStatusMap[status] || ""}
           </Badge>
 

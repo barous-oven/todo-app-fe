@@ -100,11 +100,8 @@ export default function TasksPage() {
       <PageHeader
         pageName="Tasks"
         pageDescription="Manage your personal workflow and deadlines."
-        onCreate={() => {
-          setSelectedTask(null)
-          setOpenCreateDialog(true)
-        }}
-        children={
+      >
+        <div className="flex items-center gap-2">
           <Button
             size="sm"
             className="gap-2"
@@ -113,8 +110,19 @@ export default function TasksPage() {
             <Plus className="h-4 w-4" />
             New with AI
           </Button>
-        }
-      />
+          <Button
+            size="sm"
+            className="gap-2"
+            onClick={() => {
+              setSelectedTask(null)
+              setOpenCreateDialog(true)
+            }}
+          >
+            <Plus className="h-4 w-4" />
+            New
+          </Button>
+        </div>
+      </PageHeader>
       <div className="mb-6 flex items-center gap-2">
         <Input
           placeholder="Search tasks..."

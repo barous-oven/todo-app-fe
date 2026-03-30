@@ -33,13 +33,19 @@ export default function CreateTaskWithAIDialog({
 }: CreateTaskWithAIDialogProps) {
   const queryClient = useQueryClient()
   const [requirement, setRequirement] = useState("")
-  const [tasks, setTasks] = useState<TGetTaskDetailResponseSchemaDto[]>([])
+  const [previewTasks, setPreviewTasks] = useState<
+    TGetTaskDetailResponseSchemaDto[]
+  >([])
 
   const generateTasksMutation = useMutation({
     mutationFn: async () => {
       const response = await fetchData<TGetTaskDetailResponseSchemaDto[]>({
-        url: `/llm/tasks`,
-        queryParams: {
+        url: `/tasks/ai-generation`,
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: {
           requirement,
         },
       })
@@ -51,7 +57,7 @@ export default function CreateTaskWithAIDialog({
       return response.data
     },
     onSuccess: (data) => {
-      setTasks(data)
+      setPreviewTasks(data)
     },
   })
 
@@ -89,12 +95,12 @@ export default function CreateTaskWithAIDialog({
   }
 
   function onSubmit() {
-    mutate(tasks)
-    setTasks([])
+    mutate(previewTasks)
+    setPreviewTasks([])
   }
 
   function onDelete(task: TGetTaskDetailResponseSchemaDto) {
-    setTasks(tasks.filter((t) => t.title != task.title))
+    setPreviewTasks(previewTasks.filter((t) => t.title != task.title))
   }
 
   return (
@@ -126,12 +132,12 @@ export default function CreateTaskWithAIDialog({
           </Button>
         </div>
 
-        {tasks.length > 0 && (
+        {previewTasks.length > 0 && (
           <>
             <FieldLabel>Preview tasks</FieldLabel>
             <ScrollArea className="h-75 rounded-md border p-3">
               <div className="flex flex-col gap-2">
-                {tasks.map((task, index) => (
+                {previewTasks.map((task, index) => (
                   <TaskItemPreview
                     key={index}
                     {...task}
@@ -151,7 +157,9 @@ export default function CreateTaskWithAIDialog({
             </Button>
           </DialogClose>
 
-          <Button onClick={onSubmit}>Submit</Button>
+          <Button onClick={onSubmit} disabled={previewTasks.length === 0}>
+            Submit
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
