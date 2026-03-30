@@ -2,12 +2,12 @@
 
 import { useAuth } from "@/components/auth-provider"
 import ProfileDropdown from "@/components/header/dropdown-profile"
-import { AvatarImage, AvatarFallback, Avatar } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   Breadcrumb,
-  BreadcrumbList,
   BreadcrumbItem,
   BreadcrumbLink,
+  BreadcrumbList,
 } from "@/components/ui/breadcrumb"
 import { Button } from "@/components/ui/button"
 import { ReactNode } from "react"

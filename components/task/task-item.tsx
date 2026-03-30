@@ -9,18 +9,8 @@ import handleErrorMessage from "@/lib/handle-error-message"
 import { taskStatusMap, TGetTaskResponseSchemaDto } from "@/types/task"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { format } from "date-fns"
-import { toast } from "sonner"
-import { useAuth } from "../auth-provider"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from "../ui/dropdown-menu"
-import { FieldLabel } from "../ui/field"
 import { Trash2 } from "lucide-react"
+import { toast } from "sonner"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -32,6 +22,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "../ui/alert-dialog"
+import { FieldLabel } from "../ui/field"
 
 type TaskItemProps = TGetTaskResponseSchemaDto & {
   onEdit: () => void
