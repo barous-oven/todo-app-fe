@@ -15,6 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select"
+import { Textarea } from "../ui/textarea"
 
 type TFormFieldProps<T> = {
   field: ControllerRenderProps<FieldValues, Path<T>>
@@ -49,6 +50,9 @@ export function FormField<T>({
     }
     case "datetime-picker": {
       return <DateTimePicker {...field} {...props} />
+    }
+    case "textarea": {
+      return <Textarea {...field} id={field.name} {...props} />
     }
 
     default: {

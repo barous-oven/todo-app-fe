@@ -17,7 +17,7 @@ export const UPDATE_TASK_FORM_METADATA: IFormItemProps<TGetTaskDetailResponseSch
     },
     {
       name: "description",
-      type: "text",
+      type: "textarea",
       label: "Description",
       props: {
         placeholder: "Description",

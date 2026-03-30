@@ -1,10 +1,12 @@
 import { Plus } from "lucide-react"
 import { Button } from "./ui/button"
+import { Children } from "react"
 
 export type TPageProps = {
   pageName: string
   pageDescription: string
   onCreate?: () => void
+  children?: React.ReactNode
 }
 
 export function PageHeader(props: TPageProps) {
@@ -16,10 +18,13 @@ export function PageHeader(props: TPageProps) {
         <p className="text-sm text-muted-foreground">{pageDescription}</p>
       </div>
 
-      <Button size="sm" className="gap-2" onClick={onCreate}>
-        <Plus className="h-4 w-4" />
-        New
-      </Button>
+      <div className="flex items-center gap-2">
+        {props.children}
+        <Button size="sm" className="gap-2" onClick={onCreate}>
+          <Plus className="h-4 w-4" />
+          New
+        </Button>
+      </div>
     </header>
   )
 }

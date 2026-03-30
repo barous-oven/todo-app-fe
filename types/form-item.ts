@@ -1,6 +1,7 @@
 import { FieldValues, Path } from "react-hook-form"
 import { TSelectOptions } from "./select-options"
 import { DateTimePickerProps } from "@/components/ui/date-time-picker"
+import { Textarea } from "@/components/ui/textarea"
 
 export type IFormItemProps<T extends FieldValues> = {
   name: Path<T>
@@ -12,6 +13,7 @@ export type TFormField =
   | TInputItemProps
   | TInputPasswordProps
   | TDatetimePickProps
+  | TTextAreaItemProps
 
 export type TInputType = TFormField["type"]
 
@@ -36,4 +38,9 @@ type TInputPasswordProps = {
 type TDatetimePickProps = {
   type: "datetime-picker"
   props?: DateTimePickerProps
+}
+
+type TTextAreaItemProps = {
+  type: "textarea"
+  props: React.ComponentProps<"textarea">
 }
