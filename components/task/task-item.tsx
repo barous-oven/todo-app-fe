@@ -20,6 +20,18 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu"
 import { FieldLabel } from "../ui/field"
+import { Trash2 } from "lucide-react"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "../ui/alert-dialog"
 
 type TaskItemProps = TGetTaskResponseSchemaDto & {
   onEdit: () => void
@@ -83,16 +95,17 @@ export function TaskItem({
   }
 
   return (
-    <FieldLabel className="w-full" id={id}>
-      <Item variant="outline" className="group w-full py-3">
-        <ItemContent className="flex flex-col gap-2">
-          <div className="flex items-center gap-3">
-            <Checkbox
-              id={id}
-              checked={isCompleted}
-              onCheckedChange={toggleComplete}
-              aria-label={`Mark "${title}" as complete`}
-            />
+    <Item variant="outline" className="group w-full cursor-pointer py-3">
+      <ItemContent className="flex flex-col gap-2" onClick={onEdit}>
+        <div className="flex items-center gap-3">
+          <Checkbox
+            id={id}
+            checked={isCompleted}
+            onCheckedChange={toggleComplete}
+            aria-label={`Mark "${title}" as complete`}
+            className="hover:border-primary hover:bg-primary/10"
+          />
+          <FieldLabel className="w-full" id={id}>
             <ItemTitle
               className={`transition-all duration-300 ${
                 isCompleted
@@ -102,42 +115,57 @@ export function TaskItem({
             >
               {title}
             </ItemTitle>
-          </div>
+          </FieldLabel>
+        </div>
 
-          <div className="flex items-center gap-2 pl-8 text-xs text-muted-foreground">
-            <Badge
-              variant={isCompleted ? "secondary" : "outline"}
-              className="capitalize"
+        <div className="flex items-center gap-2 pl-8 text-xs text-muted-foreground">
+          <Badge
+            variant={isCompleted ? "secondary" : "outline"}
+            className="capitalize"
+          >
+            {taskStatusMap[status] || ""}
+          </Badge>
+          <span>•</span>
+          <span className={isOverdue ? "font-medium text-destructive" : ""}>
+            {isOverdue ? "Expired: " : "Expires at: "}{" "}
+            {format(expiredAt, DATETIME_FORMAT)}
+          </span>
+        </div>
+      </ItemContent>
+
+      <ItemActions>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={(e) => e.stopPropagation()}
             >
-              {taskStatusMap[status] || ""}
-            </Badge>
-            <span>•</span>
-            <span className={isOverdue ? "font-medium text-destructive" : ""}>
-              {isOverdue ? "Expired: " : "Expires at: "}{" "}
-              {format(expiredAt, DATETIME_FORMAT)}
-            </span>
-          </div>
-        </ItemContent>
+              <Trash2 className="h-4 w-4 text-destructive" />
+            </Button>
+          </AlertDialogTrigger>
 
-        <ItemActions>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline">...</Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuGroup>
-                <DropdownMenuLabel>Action</DropdownMenuLabel>
-                <DropdownMenuItem id="edit" onClickCapture={onEdit}>
-                  Edit
-                </DropdownMenuItem>
-                <DropdownMenuItem id="delete" onClick={onDelete}>
-                  Delete
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </ItemActions>
-      </Item>
-    </FieldLabel>
+          <AlertDialogContent onClick={(e) => e.stopPropagation()}>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Delete task?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This action cannot be undone. This task will be permanently
+                deleted.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={onDelete}
+                className="bg-destructive text-white hover:bg-destructive/90"
+              >
+                Delete
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </ItemActions>
+    </Item>
   )
 }
