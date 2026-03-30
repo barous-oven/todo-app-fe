@@ -102,8 +102,9 @@ export function TaskItem({
             id={id}
             checked={isCompleted}
             onCheckedChange={toggleComplete}
+            onClick={(e) => e.stopPropagation()}
             aria-label={`Mark "${title}" as complete`}
-            className="cursor-pointer hover:border-primary hover:bg-primary/10"
+            className="cursor-pointer transition-colors hover:border-primary hover:bg-primary/10 data-[state=checked]:border-primary data-[state=checked]:bg-primary"
           />
           <FieldLabel className="w-full cursor-pointer" id={id}>
             <ItemTitle
