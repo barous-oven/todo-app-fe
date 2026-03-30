@@ -71,13 +71,11 @@ export async function fetchData<T>(req: ApiRequest): Promise<ApiResponse<T>> {
     try {
       // handle refresh token
       if (!promiseRefresh) {
-        refreshTokens(refreshToken)
-      } else {
-        promiseRefresh.finally(() => {
-          promiseRefresh = null
-        })
+        promiseRefresh = refreshTokens(refreshToken)
       }
-
+      await promiseRefresh.finally(() => {
+        promiseRefresh = null
+      })
       return fetchData<T>(req)
     } catch {
       await removeTokens()
