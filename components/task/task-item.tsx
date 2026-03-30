@@ -1,5 +1,4 @@
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Item, ItemActions, ItemContent, ItemTitle } from "@/components/ui/item"
 import { DATETIME_FORMAT } from "@/constants/datetime-format"
@@ -9,23 +8,9 @@ import handleErrorMessage from "@/lib/handle-error-message"
 import { taskStatusMap, TGetTaskResponseSchemaDto } from "@/types/task"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { format } from "date-fns"
-import { Trash2 } from "lucide-react"
 import { toast } from "sonner"
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "../ui/alert-dialog"
+import CustomAlertDialog from "../custom/custom-alert-dialog"
 import { FieldLabel } from "../ui/field"
-import CustomAlertDialog, {
-  CustomAlertDialogProps,
-} from "../alert-dialog/alert-dialog"
 
 type TaskItemProps = TGetTaskResponseSchemaDto & {
   onEdit: () => void
@@ -88,14 +73,6 @@ export function TaskItem({
     })
   }
 
-  const deleteAlertDialogProps: CustomAlertDialogProps = {
-    title: "Delete task?",
-    description:
-      "This action cannot be undone. This task will be permanently deleted.",
-    onAccept: onDelete,
-    acceptTitle: "Delete",
-  }
-
   return (
     <Item variant="outline" className="group w-full cursor-pointer py-3">
       <ItemContent className="flex flex-col gap-2" onClick={onEdit}>
@@ -137,7 +114,12 @@ export function TaskItem({
       </ItemContent>
 
       <ItemActions>
-        <CustomAlertDialog {...deleteAlertDialogProps} />
+        <CustomAlertDialog
+          title="Delete task?"
+          description="This action cannot be undone. This task will be permanently deleted."
+          onAccept={onDelete}
+          acceptTitle="Delete"
+        />
       </ItemActions>
     </Item>
   )

@@ -1,6 +1,6 @@
 "use client"
 
-import { CustomDropDown } from "@/components/custom-dropdown/custom-dropdown"
+import { CustomDropDown } from "@/components/custom/custom-dropdown"
 import { PageHeader } from "@/components/page-header"
 import { CommonPagination } from "@/components/pagination"
 import { CreateTaskDialog } from "@/components/task/create-task-dialog"

@@ -1,7 +1,6 @@
 import { Geist_Mono, Inter } from "next/font/google"
 import "./globals.css"
 
-import { ThemeProvider } from "@/components/theme-provider"
 import { cn } from "@/lib/utils"
 import { Toaster } from "sonner"
 
@@ -34,16 +33,14 @@ export default async function RootLayout({
       <body>
         <QueryProvider>
           <AuthProvider>
-            <ThemeProvider>
-              {children}
-              <Toaster
-                position="top-right"
-                richColors
-                closeButton
-                expand={false}
-                duration={3000}
-              />
-            </ThemeProvider>
+            {children}
+            <Toaster
+              position="top-right"
+              richColors
+              closeButton
+              expand={false}
+              duration={3000}
+            />
           </AuthProvider>
         </QueryProvider>
       </body>
