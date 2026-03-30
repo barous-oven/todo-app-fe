@@ -59,6 +59,9 @@ export default function CreateTaskWithAIDialog({
     onSuccess: (data) => {
       setPreviewTasks(data)
     },
+    onError: (error) => {
+      toast.error(handleErrorMessage(error))
+    },
   })
 
   const { mutate } = useMutation({
