@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { format } from "date-fns"
+import { format, startOfToday } from "date-fns"
 import { CalendarIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -16,10 +16,15 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 
 export type DateTimePickerProps = {
   value?: string
-  onChange: (value: string) => void
+  onChange?: (value: string) => void
+  calendarProps?: React.ComponentProps<typeof Calendar>
 }
 
-export function DateTimePicker({ value, onChange }: DateTimePickerProps) {
+export function DateTimePicker({
+  value,
+  onChange,
+  calendarProps,
+}: DateTimePickerProps) {
   const date = new Date(value ?? "")
   const [isOpen, setIsOpen] = React.useState(false)
 
@@ -32,11 +37,11 @@ export function DateTimePicker({ value, onChange }: DateTimePickerProps) {
       const newDate = new Date(selectedDate)
       newDate.setHours(date.getHours())
       newDate.setMinutes(date.getMinutes())
-      onChange(newDate.toISOString())
+      onChange?.(newDate.toISOString())
       return
     }
 
-    onChange(selectedDate.toISOString())
+    onChange?.(selectedDate.toISOString())
   }
 
   const handleTimeChange = (
@@ -63,7 +68,7 @@ export function DateTimePicker({ value, onChange }: DateTimePickerProps) {
       }
     }
 
-    onChange(newDate.toISOString())
+    onChange?.(newDate.toISOString())
   }
 
   return (
@@ -88,6 +93,7 @@ export function DateTimePicker({ value, onChange }: DateTimePickerProps) {
       <PopoverContent className="w-auto p-0">
         <div className="sm:flex">
           <Calendar
+            {...calendarProps}
             mode="single"
             selected={date}
             onSelect={handleDateSelect}

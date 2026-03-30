@@ -1,3 +1,4 @@
+import { TFormField, TInputType } from "@/types/form-item"
 import {
   ControllerFieldState,
   ControllerRenderProps,
@@ -14,7 +15,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select"
-import { TFormField, TInputType } from "@/types/form-item"
 
 type TFormFieldProps<T> = {
   field: ControllerRenderProps<FieldValues, Path<T>>
@@ -48,7 +48,7 @@ export function FormField<T>({
       )
     }
     case "datetime-picker": {
-      return <DateTimePicker {...field} />
+      return <DateTimePicker {...field} {...props} />
     }
 
     default: {

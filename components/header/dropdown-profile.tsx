@@ -12,7 +12,6 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { redirect } from "next/navigation"
 import { useAuth } from "../auth-provider"
 
 type Props = {

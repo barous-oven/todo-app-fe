@@ -1,5 +1,4 @@
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Item, ItemActions, ItemContent, ItemTitle } from "@/components/ui/item"
 import { DATETIME_FORMAT } from "@/constants/datetime-format"
@@ -10,15 +9,7 @@ import { taskStatusMap, TGetTaskResponseSchemaDto } from "@/types/task"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { format } from "date-fns"
 import { toast } from "sonner"
-import { useAuth } from "../auth-provider"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from "../ui/dropdown-menu"
+import CustomAlertDialog from "../custom/custom-alert-dialog"
 import { FieldLabel } from "../ui/field"
 
 type TaskItemProps = TGetTaskResponseSchemaDto & {
@@ -83,18 +74,20 @@ export function TaskItem({
   }
 
   return (
-    <FieldLabel className="w-full" id={id}>
-      <Item variant="outline" className="group w-full py-3">
-        <ItemContent className="flex flex-col gap-2">
-          <div className="flex items-center gap-3">
-            <Checkbox
-              id={id}
-              checked={isCompleted}
-              onCheckedChange={toggleComplete}
-              aria-label={`Mark "${title}" as complete`}
-            />
+    <Item variant="outline" className="group w-full cursor-pointer py-3">
+      <ItemContent className="flex flex-col gap-2" onClick={onEdit}>
+        <div className="flex items-center gap-3">
+          <Checkbox
+            id={id}
+            checked={isCompleted}
+            onCheckedChange={toggleComplete}
+            onClick={(e) => e.stopPropagation()}
+            aria-label={`Mark "${title}" as complete`}
+            className="cursor-pointer transition-colors hover:border-primary hover:bg-primary/10 data-[state=checked]:border-primary data-[state=checked]:bg-primary"
+          />
+          <FieldLabel className="w-full cursor-pointer" id={id}>
             <ItemTitle
-              className={`transition-all duration-300 ${
+              className={`cursor-pointer transition-all duration-300 ${
                 isCompleted
                   ? "text-muted-foreground line-through opacity-60"
                   : ""
@@ -102,42 +95,32 @@ export function TaskItem({
             >
               {title}
             </ItemTitle>
-          </div>
+          </FieldLabel>
+        </div>
 
-          <div className="flex items-center gap-2 pl-8 text-xs text-muted-foreground">
-            <Badge
-              variant={isCompleted ? "secondary" : "outline"}
-              className="capitalize"
-            >
-              {taskStatusMap[status] || ""}
-            </Badge>
-            <span>•</span>
-            <span className={isOverdue ? "font-medium text-destructive" : ""}>
-              {isOverdue ? "Expired: " : "Expires at: "}{" "}
-              {format(expiredAt, DATETIME_FORMAT)}
-            </span>
-          </div>
-        </ItemContent>
+        <div className="flex items-center gap-2 pl-8 text-xs text-muted-foreground">
+          <Badge
+            variant={isCompleted ? "secondary" : "outline"}
+            className="capitalize"
+          >
+            {taskStatusMap[status] || ""}
+          </Badge>
+          <span>•</span>
+          <span className={isOverdue ? "font-medium text-destructive" : ""}>
+            {isOverdue ? "Expired: " : "Expires at: "}{" "}
+            {format(expiredAt, DATETIME_FORMAT)}
+          </span>
+        </div>
+      </ItemContent>
 
-        <ItemActions>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline">...</Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuGroup>
-                <DropdownMenuLabel>Action</DropdownMenuLabel>
-                <DropdownMenuItem id="edit" onClickCapture={onEdit}>
-                  Edit
-                </DropdownMenuItem>
-                <DropdownMenuItem id="delete" onClick={onDelete}>
-                  Delete
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </ItemActions>
-      </Item>
-    </FieldLabel>
+      <ItemActions>
+        <CustomAlertDialog
+          title="Delete task?"
+          description="This action cannot be undone. This task will be permanently deleted."
+          onAccept={onDelete}
+          acceptTitle="Delete"
+        />
+      </ItemActions>
+    </Item>
   )
 }

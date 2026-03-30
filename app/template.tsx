@@ -2,12 +2,12 @@
 
 import { useAuth } from "@/components/auth-provider"
 import ProfileDropdown from "@/components/header/dropdown-profile"
-import { AvatarImage, AvatarFallback, Avatar } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   Breadcrumb,
-  BreadcrumbList,
   BreadcrumbItem,
   BreadcrumbLink,
+  BreadcrumbList,
 } from "@/components/ui/breadcrumb"
 import { Button } from "@/components/ui/button"
 import { ReactNode } from "react"
@@ -23,7 +23,7 @@ export default function RootTemplate({ children }: { children: ReactNode }) {
               <Breadcrumb className="hidden sm:block">
                 <BreadcrumbList>
                   <BreadcrumbItem>
-                    <BreadcrumbLink href="/">Home</BreadcrumbLink>
+                    <BreadcrumbLink href="/">Todo</BreadcrumbLink>
                   </BreadcrumbItem>
                 </BreadcrumbList>
               </Breadcrumb>

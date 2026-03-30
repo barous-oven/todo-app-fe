@@ -1,12 +1,9 @@
 "use client"
 
-import { getTokens } from "@/app/actions/auth"
 import { ApiResponse, fetchData } from "@/lib/fetch-data"
-import handleErrorMessage from "@/lib/handle-error-message"
 import { TMeResponseDto } from "@/types/me"
 import { useQuery } from "@tanstack/react-query"
-import { createContext, useContext, useEffect, useState } from "react"
-import { toast } from "sonner"
+import { createContext, useContext, useState } from "react"
 
 type AuthContextType = {
   user?: TMeResponseDto

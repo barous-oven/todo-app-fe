@@ -25,7 +25,7 @@ export function CustomDropDown({
       <DropdownMenuTrigger asChild>
         <Button variant="outline">{buttonLabel}</Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent>
+      <DropdownMenuContent className="w-full">
         <DropdownMenuGroup>
           <DropdownMenuLabel>{label}</DropdownMenuLabel>
           {children}

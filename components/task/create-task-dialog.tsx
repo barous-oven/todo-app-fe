@@ -13,7 +13,6 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { FormProvider, useForm } from "react-hook-form"
 import { toast } from "sonner"
-import { useAuth } from "../auth-provider"
 
 import { CREATE_TASK_FORM_METADATA } from "@/constants/task-form-meta"
 import { fetchData } from "@/lib/fetch-data"

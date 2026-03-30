@@ -1,4 +1,5 @@
 import { IFormItemProps } from "@/types/form-item"
+import { startOfToday } from "date-fns"
 import {
   TGetTaskDetailResponseSchemaDto,
   TASK_STATUS_LABEL,
@@ -34,6 +35,13 @@ export const UPDATE_TASK_FORM_METADATA: IFormItemProps<TGetTaskDetailResponseSch
       name: "expiredAt",
       label: "Expire At",
       type: "datetime-picker",
+      props: {
+        calendarProps: {
+          disabled: (date: Date) => {
+            return date < startOfToday()
+          },
+        },
+      },
     },
   ]
 

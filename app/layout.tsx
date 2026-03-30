@@ -1,14 +1,11 @@
 import { Geist_Mono, Inter } from "next/font/google"
 import "./globals.css"
 
-import { ThemeProvider } from "@/components/theme-provider"
 import { cn } from "@/lib/utils"
-import { cookies } from "next/headers"
 import { Toaster } from "sonner"
 
 import { AuthProvider } from "@/components/auth-provider"
 import QueryProvider from "@/providers/query-provider"
-import { TMeResponseDto } from "@/types/me"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" })
 
@@ -36,16 +33,14 @@ export default async function RootLayout({
       <body>
         <QueryProvider>
           <AuthProvider>
-            <ThemeProvider>
-              {children}
-              <Toaster
-                position="top-right"
-                richColors
-                closeButton
-                expand={false}
-                duration={3000}
-              />
-            </ThemeProvider>
+            {children}
+            <Toaster
+              position="top-right"
+              richColors
+              closeButton
+              expand={false}
+              duration={3000}
+            />
           </AuthProvider>
         </QueryProvider>
       </body>
