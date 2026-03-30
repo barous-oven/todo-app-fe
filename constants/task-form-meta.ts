@@ -34,6 +34,9 @@ export const UPDATE_TASK_FORM_METADATA: IFormItemProps<TGetTaskDetailResponseSch
       name: "expiredAt",
       label: "Expire At",
       type: "datetime-picker",
+      props: {
+        allowPastDate: false,
+      },
     },
   ]
 

@@ -103,11 +103,11 @@ export function TaskItem({
             checked={isCompleted}
             onCheckedChange={toggleComplete}
             aria-label={`Mark "${title}" as complete`}
-            className="hover:border-primary hover:bg-primary/10"
+            className="cursor-pointer hover:border-primary hover:bg-primary/10"
           />
-          <FieldLabel className="w-full" id={id}>
+          <FieldLabel className="w-full cursor-pointer" id={id}>
             <ItemTitle
-              className={`transition-all duration-300 ${
+              className={`cursor-pointer transition-all duration-300 ${
                 isCompleted
                   ? "text-muted-foreground line-through opacity-60"
                   : ""
