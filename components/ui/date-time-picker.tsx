@@ -17,13 +17,13 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 export type DateTimePickerProps = {
   value?: string
   onChange?: (value: string) => void
-  allowPastDate: boolean
+  calendarProps?: React.ComponentProps<typeof Calendar>
 }
 
 export function DateTimePicker({
   value,
   onChange,
-  allowPastDate,
+  calendarProps,
 }: DateTimePickerProps) {
   const date = new Date(value ?? "")
   const [isOpen, setIsOpen] = React.useState(false)
@@ -93,10 +93,10 @@ export function DateTimePicker({
       <PopoverContent className="w-auto p-0">
         <div className="sm:flex">
           <Calendar
+            {...calendarProps}
             mode="single"
             selected={date}
             onSelect={handleDateSelect}
-            disabled={allowPastDate ? undefined : (d) => d < startOfToday()}
             initialFocus
           />
 

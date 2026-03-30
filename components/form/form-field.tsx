@@ -48,12 +48,7 @@ export function FormField<T>({
       )
     }
     case "datetime-picker": {
-      return (
-        <DateTimePicker
-          {...field}
-          allowPastDate={props?.allowPastDate || false}
-        />
-      )
+      return <DateTimePicker {...field} {...props} />
     }
 
     default: {

@@ -23,6 +23,9 @@ import {
   AlertDialogTrigger,
 } from "../ui/alert-dialog"
 import { FieldLabel } from "../ui/field"
+import CustomAlertDialog, {
+  CustomAlertDialogProps,
+} from "../alert-dialog/alert-dialog"
 
 type TaskItemProps = TGetTaskResponseSchemaDto & {
   onEdit: () => void
@@ -85,6 +88,14 @@ export function TaskItem({
     })
   }
 
+  const deleteAlertDialogProps: CustomAlertDialogProps = {
+    title: "Delete task?",
+    description:
+      "This action cannot be undone. This task will be permanently deleted.",
+    onAccept: onDelete,
+    acceptTitle: "Delete",
+  }
+
   return (
     <Item variant="outline" className="group w-full cursor-pointer py-3">
       <ItemContent className="flex flex-col gap-2" onClick={onEdit}>
@@ -126,37 +137,7 @@ export function TaskItem({
       </ItemContent>
 
       <ItemActions>
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <Trash2 className="h-4 w-4 text-destructive" />
-            </Button>
-          </AlertDialogTrigger>
-
-          <AlertDialogContent onClick={(e) => e.stopPropagation()}>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Delete task?</AlertDialogTitle>
-              <AlertDialogDescription>
-                This action cannot be undone. This task will be permanently
-                deleted.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction
-                onClick={onDelete}
-                className="bg-destructive text-white hover:bg-destructive/90"
-              >
-                Delete
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+        <CustomAlertDialog {...deleteAlertDialogProps} />
       </ItemActions>
     </Item>
   )
