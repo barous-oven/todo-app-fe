@@ -1,7 +1,7 @@
 "use client"
 
 import { useAuth } from "@/components/auth-provider"
-import HamburgerMenu from "@/components/header/dropdown-profile"
+import HamburgerMenu from "@/components/header/hamburger-menu"
 import { ReactNode } from "react"
 
 export default function RootTemplate({ children }: { children: ReactNode }) {
