@@ -4,8 +4,10 @@ import { CustomDropDown } from "@/components/custom/custom-dropdown"
 import { PageHeader } from "@/components/page-header"
 import { CommonPagination } from "@/components/pagination"
 import { CreateTaskDialog } from "@/components/task/create-task-dialog"
+import CreateTaskWithAIDialog from "@/components/task/create-task-with-ai-dialog"
 import { TaskItem } from "@/components/task/task-item"
 import { UpdateTaskDialog } from "@/components/task/update-task-dialog"
+import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ItemGroup } from "@/components/ui/item"
 import {
@@ -24,6 +26,7 @@ import {
   TTaskStatus,
 } from "@/types/task"
 import { useQuery } from "@tanstack/react-query"
+import { Plus } from "lucide-react"
 import { useEffect, useState } from "react"
 import { toast } from "sonner"
 
@@ -37,6 +40,7 @@ type TQueryOptions = {
 export default function TasksPage() {
   const [openCreateDialog, setOpenCreateDialog] = useState(false)
   const [openUpdateDialog, setOpenUpdateDialog] = useState(false)
+  const [openAICreateDialog, setOpenAICreateDialog] = useState(false)
   const [selectedTask, setSelectedTask] =
     useState<TGetTaskResponseSchemaDto | null>(null)
   const [queryParams, setQueryParams] = useState<TQueryOptions>({
@@ -96,11 +100,29 @@ export default function TasksPage() {
       <PageHeader
         pageName="Tasks"
         pageDescription="Manage your personal workflow and deadlines."
-        onCreate={() => {
-          setSelectedTask(null)
-          setOpenCreateDialog(true)
-        }}
-      />
+      >
+        <div className="flex items-center gap-2">
+          <Button
+            size="sm"
+            className="gap-2"
+            onClick={() => setOpenAICreateDialog(true)}
+          >
+            <Plus className="h-4 w-4" />
+            New with AI
+          </Button>
+          <Button
+            size="sm"
+            className="gap-2"
+            onClick={() => {
+              setSelectedTask(null)
+              setOpenCreateDialog(true)
+            }}
+          >
+            <Plus className="h-4 w-4" />
+            New
+          </Button>
+        </div>
+      </PageHeader>
       <div className="mb-6 flex items-center gap-2">
         <Input
           placeholder="Search tasks..."
@@ -162,6 +184,10 @@ export default function TasksPage() {
         open={openUpdateDialog}
         onOpenChange={setOpenUpdateDialog}
         taskId={selectedTask?.id}
+      />
+      <CreateTaskWithAIDialog
+        open={openAICreateDialog}
+        onOpenChange={setOpenAICreateDialog}
       />
     </div>
   )
