@@ -51,7 +51,6 @@ export function UpdateTaskDialog({
       status: "PENDING",
     },
   })
-  console.log("🚀 ~ UpdateTaskDialog ~ form:", form.formState.errors)
 
   useQuery<ApiResponse<TGetTaskDetailResponseSchemaDto>>({
     queryKey: ["tasks", taskId],

@@ -1,3 +1,4 @@
-import { MultiSelectOption } from "@/components/ui/multi-select";
-
-export type TSelectOptions = MultiSelectOption
+export type TSelectOptions = {
+  value: string
+  label: string
+}

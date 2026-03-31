@@ -25,7 +25,6 @@ export function TaskItem({
   expiredAt,
   onEdit,
 }: TaskItemProps) {
-  console.log("🚀 ~ TaskItem ~ tags:", tags)
   const queryClient = useQueryClient()
   const updateMutation = useTaskUpdate(id)
 

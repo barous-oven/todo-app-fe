@@ -1,26 +1,27 @@
 "use client"
 
-import { LogOutIcon } from "lucide-react"
-import type { ReactNode } from "react"
+import { ListTodo, LogOutIcon, Menu, Tag } from "lucide-react"
 
 import { removeTokens } from "@/app/actions/auth"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import Link from "next/link"
 import { useAuth } from "../auth-provider"
+import { Button } from "../ui/button"
+import { AvatarImage, AvatarFallback, Avatar } from "../ui/avatar"
 
 type Props = {
-  trigger: ReactNode
   defaultOpen?: boolean
   align?: "start" | "center" | "end"
 }
 
-function ProfileDropdown({ trigger, defaultOpen, align = "end" }: Props) {
+function HamburgerMenu({ defaultOpen, align = "end" }: Props) {
   const { user, setUser } = useAuth()
 
   async function onLogout() {
@@ -30,9 +31,13 @@ function ProfileDropdown({ trigger, defaultOpen, align = "end" }: Props) {
 
   return (
     <DropdownMenu defaultOpen={defaultOpen}>
-      <DropdownMenuTrigger asChild>{trigger}</DropdownMenuTrigger>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" size="icon" className="size-9.5">
+          <Menu className="size-5" />
+        </Button>
+      </DropdownMenuTrigger>
 
-      <DropdownMenuContent className="w-80" align={align}>
+      <DropdownMenuContent className="w-64" align={align}>
         <DropdownMenuLabel className="flex items-center gap-4 px-4 py-2.5 font-normal">
           <div className="relative">
             <Avatar className="size-10">
@@ -44,7 +49,6 @@ function ProfileDropdown({ trigger, defaultOpen, align = "end" }: Props) {
             </Avatar>
             <span className="absolute right-0 bottom-0 block size-2 rounded-full bg-green-600 ring-2 ring-card" />
           </div>
-
           <div className="flex flex-1 flex-col items-start">
             <span className="text-lg font-semibold text-foreground">
               {user?.name ?? "John D"}
@@ -54,22 +58,40 @@ function ProfileDropdown({ trigger, defaultOpen, align = "end" }: Props) {
             </span>
           </div>
         </DropdownMenuLabel>
+        <DropdownMenuItem asChild className="px-4 py-2.5 text-base">
+          <Link href="/" className="flex items-center gap-2">
+            <ListTodo className="size-5" />
+            <span>Task Management</span>
+          </Link>
+        </DropdownMenuItem>
 
-        <form action={onLogout}>
-          <DropdownMenuItem
-            asChild
-            variant="destructive"
-            className="px-4 py-2.5 text-base"
+        <DropdownMenuItem asChild className="px-4 py-2.5 text-base">
+          <Link href="/tags" className="flex items-center gap-2">
+            <Tag className="size-5" />
+            <span>Tag Management</span>
+          </Link>
+        </DropdownMenuItem>
+
+        <DropdownMenuSeparator />
+
+        {/* Logout */}
+        <DropdownMenuItem
+          asChild
+          variant="destructive"
+          className="px-4 py-2.5 text-base"
+        >
+          <button
+            type="button"
+            className="flex w-full items-center gap-2"
+            onClick={onLogout}
           >
-            <button type="submit" className="w-full">
-              <LogOutIcon className="size-5" />
-              <span>Logout</span>
-            </button>
-          </DropdownMenuItem>
-        </form>
+            <LogOutIcon className="size-5" />
+            <span>Logout</span>
+          </button>
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   )
 }
 
-export default ProfileDropdown
+export default HamburgerMenu
