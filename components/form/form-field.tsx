@@ -16,6 +16,7 @@ import {
   SelectValue,
 } from "../ui/select"
 import { Textarea } from "../ui/textarea"
+import { MultiSelect } from "../ui/multi-select"
 
 type TFormFieldProps<T> = {
   field: ControllerRenderProps<FieldValues, Path<T>>
@@ -46,6 +47,16 @@ export function FormField<T>({
             </SelectGroup>
           </SelectContent>
         </Select>
+      )
+    }
+    case "multi-select": {
+      return (
+        <MultiSelect
+          {...props}
+          {...field}
+          onValueChange={field.onChange}
+          defaultValue={field.value}
+        />
       )
     }
     case "datetime-picker": {

@@ -1,4 +1,5 @@
 import { z } from "zod"
+import { getTagResponseSchema } from "./tags"
 
 export const TASK_STATUS_LABEL = [
   { label: "PENDING", value: "PENDING" },
@@ -21,6 +22,10 @@ export const getTaskResponseSchema = z.object({
 
   status: z.enum(["PENDING", "IN_PROGRESS", "COMPLETED"]),
 
+  tagIds: z.array(z.string().uuid()),
+
+  tags: z.array(getTagResponseSchema),
+
   expiredAt: z.coerce.string(),
 })
 
@@ -35,6 +40,10 @@ export const getTaskDetailResponseSchema = z.object({
 
   status: z.enum(["PENDING", "IN_PROGRESS", "COMPLETED"]),
 
+  tagIds: z.array(z.string().uuid()),
+
+  tags: z.array(getTagResponseSchema),
+
   expiredAt: z.coerce.string(),
 })
 
@@ -45,12 +54,14 @@ export type TGetTaskDetailResponseSchemaDto = z.infer<
 export const createTaskFormSchema = getTaskDetailResponseSchema.omit({
   id: true,
   status: true,
+  tags: true,
 })
 
 export type CreateTaskFormValues = z.infer<typeof createTaskFormSchema>
 
 export const updateTaskFormSchema = getTaskDetailResponseSchema.omit({
   id: true,
+  tags: true,
 })
 
 export type UpdateTaskFormValues = z.infer<typeof updateTaskFormSchema>

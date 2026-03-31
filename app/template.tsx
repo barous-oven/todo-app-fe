@@ -8,6 +8,7 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
+  BreadcrumbSeparator
 } from "@/components/ui/breadcrumb"
 import { Button } from "@/components/ui/button"
 import { ReactNode } from "react"
@@ -21,9 +22,27 @@ export default function RootTemplate({ children }: { children: ReactNode }) {
           <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-4 py-2 sm:px-6">
             <div className="flex items-center gap-4">
               <Breadcrumb className="hidden sm:block">
-                <BreadcrumbList>
+                <BreadcrumbList className="flex items-center gap-2">
                   <BreadcrumbItem>
-                    <BreadcrumbLink href="/">Todo</BreadcrumbLink>
+                    <BreadcrumbLink
+                      className="text-lg font-semibold text-muted-foreground transition-colors hover:text-primary"
+                      href="/"
+                    >
+                      Todo
+                    </BreadcrumbLink>
+                  </BreadcrumbItem>
+
+                  <BreadcrumbSeparator className="text-muted-foreground/50">
+                    <span className="text-xl">/</span>
+                  </BreadcrumbSeparator>
+
+                  <BreadcrumbItem>
+                    <BreadcrumbLink
+                      className="text-lg font-semibold text-muted-foreground transition-colors hover:text-primary"
+                      href="/tags"
+                    >
+                      Tag
+                    </BreadcrumbLink>
                   </BreadcrumbItem>
                 </BreadcrumbList>
               </Breadcrumb>

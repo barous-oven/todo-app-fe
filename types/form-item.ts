@@ -2,6 +2,7 @@ import { FieldValues, Path } from "react-hook-form"
 import { TSelectOptions } from "./select-options"
 import { DateTimePickerProps } from "@/components/ui/date-time-picker"
 import { Textarea } from "@/components/ui/textarea"
+import { MultiSelect } from "@/components/ui/multi-select"
 
 export type IFormItemProps<T extends FieldValues> = {
   name: Path<T>
@@ -14,6 +15,7 @@ export type TFormField =
   | TInputPasswordProps
   | TDatetimePickProps
   | TTextAreaItemProps
+  | TMultiSelectItemProps
 
 export type TInputType = TFormField["type"]
 
@@ -43,4 +45,9 @@ type TDatetimePickProps = {
 type TTextAreaItemProps = {
   type: "textarea"
   props: React.ComponentProps<"textarea">
+}
+
+type TMultiSelectItemProps = {
+  type: "multi-select"
+  props: Omit<React.ComponentProps<typeof MultiSelect>, "onValueChange">
 }

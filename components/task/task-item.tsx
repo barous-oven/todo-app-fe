@@ -20,9 +20,12 @@ export function TaskItem({
   id,
   title,
   status,
+  tagIds,
+  tags,
   expiredAt,
   onEdit,
 }: TaskItemProps) {
+  console.log("🚀 ~ TaskItem ~ tags:", tags)
   const queryClient = useQueryClient()
   const updateMutation = useTaskUpdate(id)
 
@@ -33,9 +36,10 @@ export function TaskItem({
     try {
       status = !isCompleted ? "COMPLETED" : "PENDING"
 
-      const body: Omit<TGetTaskResponseSchemaDto, "id"> = {
+      const body: Omit<TGetTaskResponseSchemaDto, "id" | "tags"> = {
         title,
         status,
+        tagIds,
         expiredAt,
       }
 
@@ -74,7 +78,10 @@ export function TaskItem({
   }
 
   return (
-    <Item variant="outline" className="group w-full cursor-pointer py-3">
+    <Item
+      variant="outline"
+      className="group w-full cursor-pointer bg-white py-3"
+    >
       <ItemContent className="flex flex-col gap-2" onClick={onEdit}>
         <div className="flex items-center gap-3">
           <Checkbox
@@ -85,9 +92,10 @@ export function TaskItem({
             aria-label={`Mark "${title}" as complete`}
             className="cursor-pointer transition-colors hover:border-primary hover:bg-primary/10 data-[state=checked]:border-primary data-[state=checked]:bg-primary"
           />
+
           <FieldLabel className="w-full cursor-pointer" id={id}>
             <ItemTitle
-              className={`cursor-pointer transition-all duration-300 ${
+              className={`transition-all duration-300 ${
                 isCompleted
                   ? "text-muted-foreground line-through opacity-60"
                   : ""
@@ -98,6 +106,20 @@ export function TaskItem({
           </FieldLabel>
         </div>
 
+        {tags?.length > 0 && (
+          <div className="flex flex-wrap gap-1 pl-8">
+            {tags.map((tag) => (
+              <Badge
+                key={tag.id}
+                variant="secondary"
+                className="text-[10px] font-normal"
+              >
+                {tag.title}
+              </Badge>
+            ))}
+          </div>
+        )}
+
         <div className="flex items-center gap-2 pl-8 text-xs text-muted-foreground">
           <Badge
             variant={isCompleted ? "secondary" : "outline"}
@@ -105,9 +127,11 @@ export function TaskItem({
           >
             {taskStatusMap[status] || ""}
           </Badge>
+
           <span>•</span>
+
           <span className={isOverdue ? "font-medium text-destructive" : ""}>
-            {isOverdue ? "Expired: " : "Expires at: "}{" "}
+            {isOverdue ? "Expired: " : "Expires at: "}
             {format(expiredAt, DATETIME_FORMAT)}
           </span>
         </div>

@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/select"
 import { ApiResponse, fetchData } from "@/lib/fetch-data"
 import handleErrorMessage from "@/lib/handle-error-message"
+import { TGetTagResponse } from "@/types/tags"
 import {
   TASK_STATUS_LABEL,
   TGetTaskResponseSchemaDto,
@@ -33,6 +34,7 @@ import { toast } from "sonner"
 type TQueryOptions = {
   title: string
   status?: TTaskStatus | "ALL"
+  tag?: string | "ALL"
   page: number
   limit: number
 }
@@ -48,6 +50,11 @@ export default function TasksPage() {
     page: 1,
     limit: 5,
   })
+  const [tagQueryParams, setTagQueryParams] = useState<TQueryOptions>({
+    title: "",
+    page: 1,
+    limit: 10,
+  })
 
   function onEdit(task: TGetTaskResponseSchemaDto): void {
     setSelectedTask(task)
@@ -57,13 +64,19 @@ export default function TasksPage() {
   function setQuery(value: Partial<TQueryOptions>): void {
     setQueryParams((prev) => {
       const finalQuery = { ...prev, ...value }
-      if (!value.page) {
+
+      if (value.page === undefined) {
         finalQuery.page = 1
       }
+
       if (finalQuery.status === "ALL") {
-        const { status, ...rest } = finalQuery
-        return rest
+        delete finalQuery.status
       }
+
+      if (finalQuery.tag === "ALL") {
+        delete finalQuery.tag
+      }
+
       return finalQuery
     })
   }
@@ -86,11 +99,29 @@ export default function TasksPage() {
     },
   })
 
+  const tagsData = useQuery<ApiResponse<TGetTagResponse[]>>({
+    queryKey: ["tasks", tagQueryParams],
+    queryFn: async () => {
+      const response = await fetchData<TGetTagResponse[]>({
+        url: "/tags",
+        queryParams: tagQueryParams,
+      })
+
+      if (!response.data || !response.meta) {
+        throw new Error("Something went wrong!")
+      }
+
+      return response
+    },
+  })
+
   useEffect(() => {
     if (isError && error) {
       toast.error(handleErrorMessage(error))
     }
   }, [isError, error])
+
+  const tags = tagsData.data?.data ?? []
 
   const tasks = data?.data ?? []
   const meta = data?.meta
@@ -130,28 +161,57 @@ export default function TasksPage() {
           onChange={(e) => setQuery({ title: e.target.value })}
         />
         <CustomDropDown buttonLabel="..." label="Filter">
-          <Select
-            value={queryParams.status}
-            onValueChange={(status: TTaskStatus | "ALL") =>
-              setQuery({ status })
-            }
-          >
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectItem key="ALL" value="ALL">
-                  All
-                </SelectItem>
-                {TASK_STATUS_LABEL.map((item) => (
-                  <SelectItem key={item.label} value={item.value}>
-                    {item.label}
-                  </SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
+          <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-1.5">
+              <span className="text-xs font-medium text-muted-foreground">
+                Status
+              </span>
+              <Select
+                value={queryParams.status ?? "ALL"}
+                onValueChange={(status: TTaskStatus | "ALL") =>
+                  setQuery({ status })
+                }
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="ALL">All</SelectItem>
+                    {TASK_STATUS_LABEL.map((item) => (
+                      <SelectItem key={item.value} value={item.value}>
+                        {item.label}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <span className="text-xs font-medium text-muted-foreground">
+                Tag
+              </span>
+              <Select
+                value={queryParams.tag ?? "ALL"}
+                onValueChange={(tag: string | "ALL") => setQuery({ tag })}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select tag" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="ALL">All</SelectItem>
+                    {tags.map((item) => (
+                      <SelectItem key={item.id} value={item.id}>
+                        {item.title}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
         </CustomDropDown>
       </div>
       <ItemGroup className="gap-3">
