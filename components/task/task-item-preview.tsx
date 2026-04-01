@@ -28,7 +28,6 @@ export function TaskItemPreview({
     COMPLETED: "border-emerald-200 bg-emerald-50 text-emerald-700",
     PENDING: "border-amber-200 bg-amber-50 text-amber-700",
     IN_PROGRESS: "border-sky-200 bg-sky-50 text-sky-700",
-    FAILED: "border-rose-200 bg-rose-50 text-rose-700",
   } as const
 
   return (
