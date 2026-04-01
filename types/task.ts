@@ -22,7 +22,7 @@ export const getTaskResponseSchema = z.object({
 
   status: z.enum(["PENDING", "IN_PROGRESS", "COMPLETED"]),
 
-  tagIds: z.array(z.string().uuid()),
+  tagIds: z.array(z.string().uuid()).optional(),
 
   tags: z.array(getTagResponseSchema),
 
@@ -40,7 +40,7 @@ export const getTaskDetailResponseSchema = z.object({
 
   status: z.enum(["PENDING", "IN_PROGRESS", "COMPLETED"]),
 
-  tagIds: z.array(z.string().uuid()),
+  tagIds: z.array(z.string().uuid()).optional(),
 
   tags: z.array(getTagResponseSchema),
 
