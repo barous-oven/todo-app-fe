@@ -1,13 +1,11 @@
 import { IFormItemProps } from "@/types/form-item"
 import { startOfToday } from "date-fns"
-import {
-  TGetTaskDetailResponseSchemaDto,
-  TASK_STATUS_LABEL,
-} from "@/types/task"
+import { TGetTaskDetailResponseSchemaDto } from "@/types/task"
 import { ApiResponse, fetchData } from "@/lib/fetch-data"
 import { useQuery } from "@tanstack/react-query"
 import { TSelectOptions } from "@/types/select-options"
 import { TGetTagResponse } from "@/types/tags"
+import { TASK_STATUS_LABEL } from "@/constants/task-constant"
 
 export const useTaskMetadata = (type: "create" | "update") => {
   const tagsData = useQuery<ApiResponse<TGetTagResponse[]>>({

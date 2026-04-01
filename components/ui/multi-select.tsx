@@ -269,8 +269,7 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
             <div className="ml-2 flex items-center">
               {selectedValues.length > 0 ? (
                 <>
-                  <button
-                    type="button"
+                  <div
                     className="inline-flex items-center justify-center text-muted-foreground hover:text-foreground"
                     onClick={(e) => {
                       e.preventDefault()
@@ -280,7 +279,7 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                     aria-label="Clear selection"
                   >
                     <X className="size-4" />
-                  </button>
+                  </div>
                   <Separator orientation="vertical" className="mx-2 h-4" />
                 </>
               ) : null}

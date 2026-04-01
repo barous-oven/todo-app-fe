@@ -13,13 +13,13 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { FieldGroup } from "@/components/ui/field"
+import { REGISTER_FORM_METADATA } from "@/constants/auth-form-meta"
 import { fetchData } from "@/lib/fetch-data"
 import handleErrorMessage from "@/lib/handle-error-message"
 import { registerRequestSchema, TRegisterRequestDto } from "@/types/register"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
-import { IFormItemProps } from "@/types/form-item"
 
 export default function RegisterForm() {
   const router = useRouter()
@@ -51,41 +51,6 @@ export default function RegisterForm() {
     }
   }
 
-  const formItems: IFormItemProps<TRegisterRequestDto>[] = [
-    {
-      name: "email",
-      type: "text",
-      label: "Email",
-      props: {
-        placeholder: "Enter your email",
-      },
-    },
-    {
-      name: "name",
-      type: "text",
-      label: "Name",
-      props: {
-        placeholder: "Enter your name",
-      },
-    },
-    {
-      name: "password",
-      label: "Password",
-      props: {
-        placeholder: "Enter your password",
-      },
-      type: "password",
-    },
-    {
-      name: "confirmPassword",
-      label: "Confirm password",
-      props: {
-        placeholder: "Rewrite your password",
-      },
-      type: "password",
-    },
-  ]
-
   return (
     <Card className="w-full sm:max-w-md">
       <CardHeader className="justify-center">
@@ -95,7 +60,7 @@ export default function RegisterForm() {
         <FormProvider {...form}>
           <form id="Register-form" onSubmit={form.handleSubmit(onSubmit)}>
             <FieldGroup>
-              {formItems.map((item) => (
+              {REGISTER_FORM_METADATA.map((item) => (
                 <FormItem key={item.name} {...item} />
               ))}
               <Button

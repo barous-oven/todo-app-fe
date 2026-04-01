@@ -14,9 +14,9 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { FieldGroup } from "@/components/ui/field"
+import { LOGIN_FORM_METADATA } from "@/constants/auth-form-meta"
 import { fetchData } from "@/lib/fetch-data"
 import handleErrorMessage from "@/lib/handle-error-message"
-import { IFormItemProps } from "@/types/form-item"
 import {
   loginRequestSchema,
   TLoginRequestDto,
@@ -60,25 +60,6 @@ export default function LoginForm() {
     }
   }
 
-  const fieldItems: IFormItemProps<TLoginRequestDto>[] = [
-    {
-      name: "email",
-      label: "Email",
-      type: "text",
-      props: {
-        placeholder: "Enter your email",
-      },
-    },
-    {
-      name: "password",
-      label: "Password",
-      props: {
-        placeholder: "Enter your password",
-      },
-      type: "password",
-    },
-  ]
-
   return (
     <Card className="w-full sm:max-w-md">
       <CardHeader className="justify-center">
@@ -88,7 +69,7 @@ export default function LoginForm() {
         <FormProvider {...form}>
           <form id="login-form" onSubmit={form.handleSubmit(onSubmit)}>
             <FieldGroup>
-              {fieldItems.map((item) => (
+              {LOGIN_FORM_METADATA.map((item) => (
                 <FormItem key={item.name} {...item} />
               ))}
               <Button
