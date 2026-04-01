@@ -7,10 +7,11 @@ import {
   ItemTitle,
 } from "@/components/ui/item"
 import { DATETIME_FORMAT } from "@/constants/datetime-format"
-import { taskStatusMap, TGetTaskDetailResponseSchemaDto } from "@/types/task"
+import { TGetTaskDetailResponseSchemaDto } from "@/types/task"
 import { format } from "date-fns"
 import CustomAlertDialog from "../custom/custom-alert-dialog"
 import { FieldLabel } from "../ui/field"
+import { TASK_STATUS_MAP } from "@/constants/task-constant"
 
 type TaskItemProps = TGetTaskDetailResponseSchemaDto & {
   onDelete: () => void
@@ -40,7 +41,7 @@ export function TaskItemPreview({
             <p className="text-sm text-muted-foreground">{description}</p>
           ) : null}
           <Badge variant="outline" className="capitalize">
-            {taskStatusMap[status] || ""}
+            {TASK_STATUS_MAP[status] || ""}
           </Badge>
 
           <span>•</span>

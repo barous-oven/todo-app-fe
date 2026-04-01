@@ -5,12 +5,13 @@ import { DATETIME_FORMAT } from "@/constants/datetime-format"
 import useTaskUpdate from "@/hooks/use-task-update"
 import { fetchData } from "@/lib/fetch-data"
 import handleErrorMessage from "@/lib/handle-error-message"
-import { taskStatusMap, TGetTaskResponseSchemaDto } from "@/types/task"
+import { TGetTaskResponseSchemaDto } from "@/types/task"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { format } from "date-fns"
 import { toast } from "sonner"
 import CustomAlertDialog from "../custom/custom-alert-dialog"
 import { FieldLabel } from "../ui/field"
+import { TASK_STATUS_MAP } from "@/constants/task-constant"
 
 type TaskItemProps = TGetTaskResponseSchemaDto & {
   onEdit: () => void
@@ -124,7 +125,7 @@ export function TaskItem({
             variant={isCompleted ? "secondary" : "outline"}
             className="capitalize"
           >
-            {taskStatusMap[status] || ""}
+            {TASK_STATUS_MAP[status] || ""}
           </Badge>
 
           <span>•</span>
