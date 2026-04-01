@@ -10,24 +10,24 @@ import {
 import { ReactNode } from "react"
 
 export type CustomDropDownProps = {
-  buttonLabel: string
+  trigger: ReactNode
   label: string
   children: ReactNode
 }
 
 export function CustomDropDown({
-  buttonLabel,
+  trigger,
   label,
   children,
 }: CustomDropDownProps) {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="outline">{buttonLabel}</Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-full">
+      <DropdownMenuTrigger asChild>{trigger}</DropdownMenuTrigger>
+      <DropdownMenuContent className="w-full" align="end">
         <DropdownMenuGroup>
-          <DropdownMenuLabel>{label}</DropdownMenuLabel>
+          <DropdownMenuLabel className="text-md p-2 font-bold">
+            {label}
+          </DropdownMenuLabel>
           {children}
         </DropdownMenuGroup>
       </DropdownMenuContent>
