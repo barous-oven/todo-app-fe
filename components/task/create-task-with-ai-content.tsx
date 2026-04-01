@@ -5,22 +5,17 @@ import {
 } from "@/types/task"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
+import { toast } from "sonner"
+import handleErrorMessage from "../../lib/handle-error-message"
 import { Button } from "../ui/button"
 import {
-  Dialog,
   DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
+  DialogFooter
 } from "../ui/dialog"
 import { FieldLabel } from "../ui/field"
 import { ScrollArea } from "../ui/scroll-area"
 import { Textarea } from "../ui/textarea"
 import { TaskItemPreview } from "./task-item-preview"
-import { toast } from "sonner"
-import handleErrorMessage from "../../lib/handle-error-message"
 
 type CreateTaskWithAIContentProps = {
   onOpenChange: (open: boolean) => void
@@ -106,12 +101,6 @@ export default function CreateTaskWithAIContent({
 
   return (
     <div className="flex flex-col gap-4">
-      <DialogHeader>
-        <DialogDescription>
-          Let us help you create tasks based on your goal
-        </DialogDescription>
-      </DialogHeader>
-
       <FieldLabel htmlFor="requirement">Requirement</FieldLabel>
 
       <div className="flex items-end gap-4">

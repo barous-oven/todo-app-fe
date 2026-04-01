@@ -1,14 +1,6 @@
 "use client"
 
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
+import { DialogClose, DialogFooter } from "@/components/ui/dialog"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { FormProvider, useForm } from "react-hook-form"
@@ -83,12 +75,6 @@ export function CreateTaskContent({ onOpenChange }: CreateTaskContentProps) {
   return (
     <div>
       <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
-        <DialogHeader>
-          <DialogDescription>
-            Fill in the information below to create a new task.
-          </DialogDescription>
-        </DialogHeader>
-
         <FormProvider {...form}>
           <FieldGroup>
             {metadata.map((item) => (

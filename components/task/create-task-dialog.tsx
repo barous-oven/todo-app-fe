@@ -3,6 +3,7 @@
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
@@ -31,9 +32,11 @@ export function CreateTaskDialog({
             <TabsTrigger value="manual">Manual</TabsTrigger>
             <TabsTrigger value="ai-generation">AI Generation</TabsTrigger>
           </TabsList>
+
           <TabsContent value="manual">
             <CreateTaskContent onOpenChange={onOpenChange} />
           </TabsContent>
+
           <TabsContent value="ai-generation">
             <CreateTaskWithAIDialog onOpenChange={onOpenChange} />
           </TabsContent>
