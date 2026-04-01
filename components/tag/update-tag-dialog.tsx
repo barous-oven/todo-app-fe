@@ -9,15 +9,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { useTaskMetadata } from "@/hooks/use-task-meta"
-import useTaskUpdate from "@/hooks/use-task-update"
+import { TAG_FORM_METADATA } from "@/constants/tag-form-meta"
+import useTagUpdate from "@/hooks/use-tag-update"
 import { ApiResponse, fetchData } from "@/lib/fetch-data"
 import handleErrorMessage from "@/lib/handle-error-message"
-import {
-  TGetTaskDetailResponseSchemaDto,
-  updateTaskFormSchema,
-  UpdateTaskFormValues,
-} from "@/types/task"
+import { TagFormValues, TGetTagResponse, tagFormSchema } from "@/types/tags"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { FormProvider, useForm } from "react-hook-form"
@@ -25,67 +21,58 @@ import { toast } from "sonner"
 import { FormItem } from "../form/form-item"
 import { Button } from "../ui/button"
 import { FieldGroup } from "../ui/field"
-import { TGetTagResponse } from "@/types/tags"
-import { TSelectOptions } from "@/types/select-options"
 
-type UpdateTaskDialogProps = {
+type UpdateTagDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
-  taskId?: string
+  tagId?: string
 }
 
-export function UpdateTaskDialog({
+export function UpdateTagDialog({
   open,
   onOpenChange,
-  taskId,
-}: UpdateTaskDialogProps) {
-  const metadata = useTaskMetadata("update")
+  tagId,
+}: UpdateTagDialogProps) {
   const queryClient = useQueryClient()
-  const form = useForm<UpdateTaskFormValues>({
-    resolver: zodResolver(updateTaskFormSchema),
+  const form = useForm<TagFormValues>({
+    resolver: zodResolver(tagFormSchema),
     defaultValues: {
       title: "",
       description: "",
-      tagIds: [],
-      expiredAt: new Date().toISOString(),
-      status: "PENDING",
     },
   })
-
-  useQuery<ApiResponse<TGetTaskDetailResponseSchemaDto>>({
-    queryKey: ["tasks", taskId],
+  useQuery<ApiResponse<TGetTagResponse>>({
+    queryKey: ["tags", tagId],
     queryFn: async () => {
-      const response = await fetchData<TGetTaskDetailResponseSchemaDto>({
-        url: `/tasks/${taskId}`,
+      const response = await fetchData<TGetTagResponse>({
+        url: `/tags/${tagId}`,
       })
 
       if (!response.data) {
         throw new Error("Something went wrong!")
       }
-      const task = response.data
+      const tag = response.data
 
       form.reset({
-        title: task.title ?? "",
-        description: task.description ?? "",
-        expiredAt: task.expiredAt ?? new Date().toISOString(),
-        tagIds: task.tagIds ?? [],
-        status: task.status ?? "PENDING",
+        title: tag.title ?? "",
+        description: tag.description ?? "",
+        
       })
 
       return response
     },
-    enabled: open && !!taskId,
+    enabled: open && !!tagId,
   })
 
-  const { isPending, mutate } = useTaskUpdate(taskId!)
+  const { isPending, mutate } = useTagUpdate(tagId!)
 
-  function onSubmit(data: UpdateTaskFormValues) {
+  function onSubmit(data: TagFormValues) {
     mutate(data, {
       onSuccess: async () => {
-        await queryClient.invalidateQueries({ queryKey: ["tasks"] })
-        await queryClient.invalidateQueries({ queryKey: ["tasks", taskId] })
+        await queryClient.invalidateQueries({ queryKey: ["tags"] })
+        await queryClient.invalidateQueries({ queryKey: ["tags", tagId] })
         onOpenChange(false)
-        toast.success("Task updated successfully")
+        toast.success("Tag updated successfully")
       },
       onError: (error) => {
         toast.error(handleErrorMessage(error))
@@ -98,13 +85,13 @@ export function UpdateTaskDialog({
       <DialogContent className="sm:max-w-sm">
         <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
           <DialogHeader>
-            <DialogTitle>Update Task</DialogTitle>
-            <DialogDescription>Update your task information.</DialogDescription>
+            <DialogTitle>Update Tag</DialogTitle>
+            <DialogDescription>Update your tag information.</DialogDescription>
           </DialogHeader>
 
           <FormProvider {...form}>
             <FieldGroup>
-              {metadata.map((item) => (
+              {TAG_FORM_METADATA.map((item) => (
                 <FormItem key={item.name} {...item} />
               ))}
             </FieldGroup>

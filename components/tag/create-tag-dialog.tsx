@@ -14,44 +14,35 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { FormProvider, useForm } from "react-hook-form"
 import { toast } from "sonner"
 
-import { useTaskMetadata } from "@/hooks/use-task-meta"
 import { fetchData } from "@/lib/fetch-data"
 import handleErrorMessage from "@/lib/handle-error-message"
-import {
-  createTaskFormSchema,
-  CreateTaskFormValues,
-  TGetTaskDetailResponseSchemaDto,
-} from "@/types/task"
 import { FormItem } from "../form/form-item"
 import { Button } from "../ui/button"
 import { FieldGroup } from "../ui/field"
+import { TGetTagResponse, TagFormValues, tagFormSchema } from "@/types/tags"
+import { TAG_FORM_METADATA } from "@/constants/tag-form-meta"
 
-type CreateTaskDialogProps = {
+type CreateTagDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
 }
 
-export function CreateTaskDialog({
-  open,
-  onOpenChange,
-}: CreateTaskDialogProps) {
-  const metadata = useTaskMetadata("create")
+export function CreateTagDialog({ open, onOpenChange }: CreateTagDialogProps) {
   const queryClient = useQueryClient()
 
-  const form = useForm<CreateTaskFormValues>({
-    resolver: zodResolver(createTaskFormSchema),
+  const form = useForm<TagFormValues>({
+    resolver: zodResolver(tagFormSchema),
     defaultValues: {
       title: "",
       description: "",
-      expiredAt: new Date().toISOString(),
     },
   })
 
   const { isPending, mutate } = useMutation({
-    mutationKey: ["tasks", "create"],
-    mutationFn: async (body: CreateTaskFormValues) => {
-      const response = await fetchData<TGetTaskDetailResponseSchemaDto>({
-        url: "/tasks",
+    mutationKey: ["tags", "create"],
+    mutationFn: async (body: TagFormValues) => {
+      const response = await fetchData<TGetTagResponse>({
+        url: "/tags",
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -66,21 +57,20 @@ export function CreateTaskDialog({
       return response
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["tasks"] })
+      await queryClient.invalidateQueries({ queryKey: ["tags"] })
       form.reset({
         title: "",
         description: "",
-        expiredAt: new Date().toISOString(),
       })
       onOpenChange(false)
-      toast.success("Task created successfully")
+      toast.success("Tag created successfully")
     },
     onError: (error) => {
       toast.error(handleErrorMessage(error))
     },
   })
 
-  function onSubmit(data: CreateTaskFormValues) {
+  function onSubmit(data: TagFormValues) {
     mutate(data)
   }
 
@@ -89,15 +79,15 @@ export function CreateTaskDialog({
       <DialogContent className="sm:max-w-sm">
         <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
           <DialogHeader>
-            <DialogTitle>Create Task</DialogTitle>
+            <DialogTitle>Create Tag</DialogTitle>
             <DialogDescription>
-              Fill in the information below to create a new task.
+              Fill in the information below to create a new tag.
             </DialogDescription>
           </DialogHeader>
 
           <FormProvider {...form}>
             <FieldGroup>
-              {metadata.map((item) => (
+              {TAG_FORM_METADATA.map((item) => (
                 <FormItem key={item.name} {...item} />
               ))}
             </FieldGroup>

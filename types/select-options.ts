@@ -1,4 +1,4 @@
 export type TSelectOptions = {
-  label: string
   value: string
+  label: string
 }
