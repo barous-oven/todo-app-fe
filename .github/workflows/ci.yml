@@ -17,7 +17,7 @@ on:
       - "postcss.config.*"
       - "tailwind.config.*"
       - ".eslintrc.*"
-      - ".github/workflows/ci.yml"
+      - ".github/workflows/**"
   push:
     branches:
       - main
@@ -37,7 +37,7 @@ on:
       - "postcss.config.*"
       - "tailwind.config.*"
       - ".eslintrc.*"
-      - ".github/workflows/ci.yml"
+      - ".github/workflows/**"
 
 jobs:
   ci:
