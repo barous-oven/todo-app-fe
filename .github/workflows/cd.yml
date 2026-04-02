@@ -1,11 +1,15 @@
-name: Backend CD
+name: Frontend CD
 
 on:
+  workflow_run:
+    workflows: ["Frontend CI"]
+    types:
+      - completed
   workflow_dispatch:
-  push:
-    branches:
-      - main
-      - dev
+  # push:
+  #   branches:
+  #     - main
+  #     - dev
 
 jobs:
   deploy:
