@@ -3,9 +3,8 @@
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
-  DialogTitle,
+  DialogTitle
 } from "@/components/ui/dialog"
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs"

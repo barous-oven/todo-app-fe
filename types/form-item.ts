@@ -1,8 +1,7 @@
+import { DateTimePickerProps } from "@/components/ui/date-time-picker"
+import { MultiSelect } from "@/components/ui/multi-select"
 import { FieldValues, Path } from "react-hook-form"
 import { TSelectOptions } from "./select-options"
-import { DateTimePickerProps } from "@/components/ui/date-time-picker"
-import { Textarea } from "@/components/ui/textarea"
-import { MultiSelect } from "@/components/ui/multi-select"
 
 export type IFormItemProps<T extends FieldValues> = {
   name: Path<T>

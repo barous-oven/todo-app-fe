@@ -1,4 +1,3 @@
-import { useAuth } from "@/components/auth-provider"
 import { fetchData } from "@/lib/fetch-data"
 import { TGetTaskResponseSchemaDto } from "@/types/task"
 import { useMutation } from "@tanstack/react-query"

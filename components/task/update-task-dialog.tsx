@@ -25,8 +25,6 @@ import { toast } from "sonner"
 import { FormItem } from "../form/form-item"
 import { Button } from "../ui/button"
 import { FieldGroup } from "../ui/field"
-import { TGetTagResponse } from "@/types/tags"
-import { TSelectOptions } from "@/types/select-options"
 
 type UpdateTaskDialogProps = {
   open: boolean

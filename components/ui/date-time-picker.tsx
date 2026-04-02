@@ -1,10 +1,9 @@
 "use client"
 
-import * as React from "react"
-import { format, startOfToday } from "date-fns"
+import { format } from "date-fns"
 import { CalendarIcon } from "lucide-react"
+import * as React from "react"
 
-import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import {
@@ -13,6 +12,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
+import { cn } from "@/lib/utils"
 
 export type DateTimePickerProps = {
   value?: string
